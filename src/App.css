@@ -7,6 +7,15 @@
   pointer-events: none;
 }
 
+
+.finlandica-text {
+  font-family: "Finlandica", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

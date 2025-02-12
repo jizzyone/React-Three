@@ -1,18 +1,13 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -22,5 +17,5 @@
   },
   "include": [
     "src"
-  ]
+, "../new-threejs-app/src/Components/AnimatedModel.tsx", "../new-threejs-app/src/Components/Header.tsx", "../new-threejs-app/src/Components/PhoneModel.tsx", "../new-threejs-app/src/Components/Scene.tsx"  ]
 }
