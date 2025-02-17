@@ -1,0 +1,80 @@
+.watch-specs-container {
+    width: 100%;
+    min-height: 100vh;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .watch-specs-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 4rem;
+    text-align: center;
+  }
+  
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    width: 100%;
+  }
+  
+  @media (min-width: 768px) {
+    .specs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .specs-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .spec-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.1s ease;
+  }
+  
+  .spec-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .spec-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .spec-icon {
+    color: #67b2ff;
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .spec-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .spec-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .spec-item {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+  }
