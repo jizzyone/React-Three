@@ -1,7 +1,7 @@
 import React, { Suspense, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import '../styles/Scene.css';
-import { OrbitControls, Stage, Html, useGLTF } from '@react-three/drei';
+import { Stage, Html, useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import LiquidMetalBackground from './LiquidMetalBackground';
 
@@ -118,15 +118,23 @@ const TextContent: React.FC<{ progress: number }> = ({ progress }) => {
   );
 };
 
-const PhoneModel: React.FC<{ progress: number }> = ({ progress }) => {
+const PhoneModel: React.FC<{ progress: number, isMobile: boolean }> = ({ progress, isMobile }) => {
   const { scene } = useGLTF('./samsung_galaxy_s22_ultra.glb');
   const modelRef = useRef<THREE.Group>(null);
+  const autoRotationRef = useRef(0);
 
   useFrame(() => {
     if (modelRef.current) {
-      modelRef.current.rotation.x = Math.sin(progress * Math.PI / 2) * Math.PI / 2;
-      modelRef.current.rotation.y = Math.sin(progress * Math.PI / 2) * Math.PI;
-      modelRef.current.position.y = Math.sin(progress * Math.PI) * -1;
+      if (isMobile) {
+        // Автоматическое вращение для мобильных устройств
+        autoRotationRef.current += 0.01; // Скорость авто-вращения
+        modelRef.current.rotation.y = autoRotationRef.current;
+      } else {
+        // Существующая логика вращения для десктопа
+        modelRef.current.rotation.x = Math.sin(progress * Math.PI / 2) * Math.PI / 2;
+        modelRef.current.rotation.y = Math.sin(progress * Math.PI / 2) * Math.PI;
+        modelRef.current.position.y = Math.sin(progress * Math.PI) * -1;
+      }
     }
   });
 
@@ -143,12 +151,26 @@ const PhoneModel: React.FC<{ progress: number }> = ({ progress }) => {
 
 const Scene: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Определение мобильного устройства
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    // Обработка скролла
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const progress = sceneRef.current
@@ -169,13 +191,6 @@ const Scene: React.FC = () => {
         Новый noNamePhone Ultra
         <span>Переосмысление технологий</span>
       </div>
-      
-      {/* <div className='hero-subtext'>
-        <span>
-          Не описать словами насколько он красивый и модный и вообще самый классный,
-          вы только посмотрите какой он красивый
-        </span>
-      </div> */}
 
       <div className="model-container">
         <Canvas camera={{ position: [0, 6, 22], fov: 75 }}>
@@ -184,9 +199,9 @@ const Scene: React.FC = () => {
             <hemisphereLight intensity={0.15} color="#ffffff" groundColor="#bbbbff" />
             <AnimatedLights />
             <Stage environment="studio" intensity={0.5} shadows preset="rembrandt" adjustCamera={false}>
-              <PhoneModel progress={progress} />
+              <PhoneModel progress={progress} isMobile={isMobile} />
             </Stage>
-            <OrbitControls enableZoom={false} enablePan={false} />
+            {!isMobile && <OrbitControls enableZoom={false} enablePan={false} />}
           </Suspense>
         </Canvas>
       </div>
