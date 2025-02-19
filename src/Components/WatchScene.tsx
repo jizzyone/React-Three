@@ -6,8 +6,11 @@ import * as THREE from 'three';
 import LiquidMetalBackground from './LiquidMetalBackground';
 import WatchSpecs from './WatchSpecs';
 import SecondWatch from './SecondWatch';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
+import MobileDeviceDisplay from './MobileDeviceDisplay';
 
 const WatchModel = () => {
+  // Component implementation remains the same...
   const { scene } = useGLTF('./samsung__galaxy__watch_5.glb');
   const modelRef = useRef<THREE.Group>(null);
   const { scrollYProgress } = useScroll();
@@ -147,6 +150,9 @@ const Feature = ({ title, description }: { title: string; description: string })
 };
 
 const WatchScene: React.FC = () => {
+  const { isMobile, isTablet } = useDeviceDetect();
+  const { scrollYProgress } = useScroll();
+
   return (
     <div style={{ position: 'relative' }}>
       {/* Фоновый эффект */}
@@ -178,55 +184,64 @@ const WatchScene: React.FC = () => {
         justifyContent: 'center',
         zIndex: 2
       }}>
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-          <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
-          <ambientLight intensity={1.5} />
-            <directionalLight 
-              position={[5, 5, 5]} 
-              intensity={2} 
-              castShadow={false} 
-              color="#ffffff" 
+        {(!isMobile && !isTablet) ? (
+          <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+            <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
+              <ambientLight intensity={1.5} />
+              <directionalLight 
+                position={[5, 5, 5]} 
+                intensity={2} 
+                castShadow={false} 
+                color="#ffffff" 
+              />
+              <spotLight 
+                position={[5, 5, 0]} 
+                intensity={2} 
+                angle={0.5} 
+                penumbra={0.5} 
+                color="#ffffff"
+                castShadow={false}
+              />
+              <spotLight 
+                position={[-5, 5, 0]} 
+                intensity={1.5} 
+                angle={0.5} 
+                penumbra={0.5} 
+                color="#ffffff"
+                castShadow={false}
+              />
+              <spotLight 
+                position={[0, -5, 5]} 
+                intensity={1} 
+                angle={0.5} 
+                penumbra={0.5} 
+                color="#4a9eff"
+                castShadow={false}
+              />
+              <Stage
+                environment="city"
+                intensity={1}
+                preset="rembrandt"
+                adjustCamera={false}
+                shadows={false}
+              >
+                <WatchModel />
+              </Stage>
+              <OrbitControls 
+                enableZoom={false}
+                enablePan={false}
+                enableRotate={false}
+              />
+            </Suspense>
+          </Canvas>
+        ) : (
+          <div className="mobile-watch-container">
+            <MobileDeviceDisplay 
+              deviceType="watch" 
+              variant="hero" 
             />
-            <spotLight 
-              position={[5, 5, 0]} 
-              intensity={2} 
-              angle={0.5} 
-              penumbra={0.5} 
-              color="#ffffff"
-              castShadow={false}
-            />
-            <spotLight 
-              position={[-5, 5, 0]} 
-              intensity={1.5} 
-              angle={0.5} 
-              penumbra={0.5} 
-              color="#ffffff"
-              castShadow={false}
-            />
-            <spotLight 
-              position={[0, -5, 5]} 
-              intensity={1} 
-              angle={0.5} 
-              penumbra={0.5} 
-              color="#4a9eff"
-              castShadow={false}
-            />
-            <Stage
-              environment="city"
-              intensity={1}
-              preset="rembrandt"
-              adjustCamera={false}
-              shadows={false}
-            >
-              <WatchModel />
-            </Stage>
-            <OrbitControls 
-              enableZoom={false}
-              enablePan={false}
-              enableRotate={false}
-            />
-          </Suspense>
-        </Canvas>
+          </div>
+        )}
       </div>
 
       {/* Текстовый контент */}
@@ -276,7 +291,6 @@ const WatchScene: React.FC = () => {
       <div style={{ 
         padding: '6rem 2rem',
         position: 'relative',
-        // background: 'linear-gradient(to bottom, rgba(26, 26, 46, 0.8), rgba(15, 15, 30, 0.9))',
         zIndex: 20
       }}>
         <WatchFeatures />
@@ -289,53 +303,61 @@ const WatchScene: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // background: 'linear-gradient(to bottom, rgba(26, 26, 46, 0.8), rgba(15, 15, 30, 0.9))',
         zIndex: 21
       }}>
-        <Canvas 
-          camera={{ position: [0, 0, 5], fov: 50 }}
-          style={{ 
-            position: 'absolute',
-            width: '100%',
-            height: '100%'
-          }}
-        >
-          <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
-            <ambientLight intensity={2} />
-            <directionalLight 
-              position={[5, 5, 5]} 
-              intensity={3} 
-              color="#ffffff" 
+        {(!isMobile && !isTablet) ? (
+          <Canvas 
+            camera={{ position: [0, 0, 5], fov: 50 }}
+            style={{ 
+              position: 'absolute',
+              width: '100%',
+              height: '100%'
+            }}
+          >
+            <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
+              <ambientLight intensity={2} />
+              <directionalLight 
+                position={[5, 5, 5]} 
+                intensity={3} 
+                color="#ffffff" 
+              />
+              <spotLight
+                position={[5, 5, 0]}
+                intensity={2}
+                angle={0.5}
+                penumbra={0.5}
+                color="#ffffff"
+              />
+              <spotLight
+                position={[-5, 5, 0]}
+                intensity={1.5}
+                angle={0.5}
+                penumbra={0.5}
+                color="#ffffff"
+              />
+              <Stage
+                environment="city"
+                intensity={1}
+                preset="rembrandt"
+                adjustCamera={false}
+              >
+                <SecondWatch />
+              </Stage>
+              <OrbitControls 
+                enableZoom={false}
+                enablePan={false}
+                enableRotate={false}
+              />
+            </Suspense>
+          </Canvas>
+        ) : (
+          <div className="mobile-second-watch-container">
+            <MobileDeviceDisplay 
+              deviceType="watch" 
+              variant="detail" 
             />
-            <spotLight
-              position={[5, 5, 0]}
-              intensity={2}
-              angle={0.5}
-              penumbra={0.5}
-              color="#ffffff"
-            />
-            <spotLight
-              position={[-5, 5, 0]}
-              intensity={1.5}
-              angle={0.5}
-              penumbra={0.5}
-              color="#ffffff"
-            />
-            <Stage
-              environment="city"
-              intensity={1}
-              preset="rembrandt"
-              adjustCamera={false}
-            >
-              <SecondWatch />
-            </Stage>
-            <OrbitControls 
-              enableZoom={false}
-              enablePan={false}
-              enableRotate={false}
-            />
-          </Suspense>
-        </Canvas>
+          </div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}

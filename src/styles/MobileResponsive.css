@@ -1,0 +1,179 @@
+/* Исправления для мобильной адаптивности */
+
+/* Общие исправления */
+@media (max-width: 768px) {
+    h1, h2, h3 {
+      word-break: break-word;
+      hyphens: auto;
+    }
+    
+    .text-content h2 {
+      font-size: 1.8rem;
+    }
+    
+    .text-content p {
+      font-size: 1rem;
+    }
+  }
+  
+  /* Исправления для WatchScene */
+  @media (max-width: 768px) {
+    /* Основные стили */
+    .canvas-background {
+      position: fixed !important;
+      height: 100vh !important;
+      top: 0 !important;
+    }
+    
+    /* Основной контент */
+    .mobile-watch-container,
+    .mobile-second-watch-container {
+      min-height: 50vh;
+      margin: 2rem 0;
+    }
+    
+    /* Фиксированная высота для контейнеров */
+    .mobile-watch-container {
+      max-height: 60vh;
+    }
+    
+    .mobile-second-watch-container {
+      max-height: 50vh;
+    }
+    
+    /* Текстовый контент */
+    [style*="color: white; width: 100%"] {
+      padding: 1rem;
+    }
+    
+    [style*="fontSize: 2.5rem"] {
+      font-size: 1.8rem !important;
+    }
+    
+    /* Особенности и характеристики */
+    .watch-specs-container {
+      padding: 3rem 1rem;
+    }
+    
+    .watch-specs-title {
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+    }
+    
+    .spec-card {
+      padding: 1rem;
+    }
+    
+    .spec-title {
+      font-size: 1rem;
+    }
+    
+    .spec-item {
+      font-size: 0.9rem;
+    }
+    
+    /* Названия и заголовки */
+    [style*="fontSize: 4rem"] {
+      font-size: 2.2rem !important;
+      text-align: center;
+      width: 100% !important;
+      left: 0 !important;
+      max-width: 100% !important;
+      padding: 0 1rem;
+    }
+    
+    [style*="fontSize: 1.5rem"] {
+      font-size: 1.1rem !important;
+    }
+    
+    [style*="fontSize: 3rem"] {
+      font-size: 1.8rem !important;
+    }
+    
+    /* Вторая модель часов */
+    [style*="fontSize: 2.5rem"] {
+      font-size: 1.5rem !important;
+      text-align: center;
+      width: 100% !important;
+      left: 0 !important;
+      max-width: 100% !important;
+      padding: 0 1rem;
+    }
+    
+    [style*="fontSize: 1.2rem"] {
+      font-size: 1rem !important;
+      text-align: center;
+    }
+  }
+  
+  /* Исправления для TabletScene */
+  @media (max-width: 768px) {
+    /* Основной контейнер должен быть минимальной высоты */
+    [style*="min-height: 300vh"] {
+      min-height: 200vh;
+    }
+    
+    /* Центрирование контента */
+    .mobile-tablet-container {
+      min-height: 50vh;
+      margin: 2rem 0;
+    }
+    
+    /* Свойства текста */
+    [style*="transform: translate(-50%, -50%)"] {
+      width: 90% !important;
+      max-width: 90% !important;
+      padding: 0 !important;
+    }
+    
+    /* Фиксы для сетки особенностей */
+    [style*="display: grid"] {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Исправление размера текста */
+    [style*="fontSize: 3.5rem"] {
+      font-size: 1.8rem !important;
+      margin-bottom: 1rem !important;
+      text-align: center;
+    }
+  }
+  
+  /* Исправления для Product Detail */
+  @media (max-width: 768px) {
+    .product-detail--mobile {
+      padding-top: 64px;
+    }
+    
+    .product-detail--mobile .product-detail__model {
+      height: 45vh;
+    }
+    
+    .product-detail--mobile .product-detail__info {
+      padding: 1rem;
+    }
+    
+    .product-detail--mobile .product-detail__title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .product-detail--mobile .buy-button {
+      margin-top: 0.5rem;
+    }
+  }
+  
+  /* Фикс для позиционирования на devices iPhone и подобных */
+  @supports (-webkit-touch-callout: none) {
+    .mobile-watch-container,
+    .mobile-tablet-container,
+    .mobile-device-display {
+      height: 50vh;
+      min-height: auto;
+    }
+    
+    .hero-variant .device-placeholder {
+      min-height: auto;
+      height: 40vh;
+    }
+  }
