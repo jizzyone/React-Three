@@ -4,8 +4,6 @@ import '../styles/Scene.css';
 import { OrbitControls, Stage, Html, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import LiquidMetalBackground from './LiquidMetalBackground';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
-import MobileDeviceDisplay from './MobileDeviceDisplay';
 
 const AnimatedLights: React.FC = () => {
   const spotLight1 = useRef<THREE.SpotLight>(null);
@@ -146,7 +144,6 @@ const PhoneModel: React.FC<{ progress: number }> = ({ progress }) => {
 const Scene: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
   const sceneRef = useRef<HTMLDivElement>(null);
-  const { isMobile, isTablet } = useDeviceDetect();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -173,27 +170,25 @@ const Scene: React.FC = () => {
         <span>Переосмысление технологий</span>
       </div>
       
+      {/* <div className='hero-subtext'>
+        <span>
+          Не описать словами насколько он красивый и модный и вообще самый классный,
+          вы только посмотрите какой он красивый
+        </span>
+      </div> */}
+
       <div className="model-container">
-        {(!isMobile && !isTablet) ? (
-          <Canvas camera={{ position: [0, 6, 22], fov: 75 }}>
-            <Suspense fallback={<Html center><div className="loading">Загрузка...</div></Html>}>
-              <ambientLight intensity={0.2} />
-              <hemisphereLight intensity={0.15} color="#ffffff" groundColor="#bbbbff" />
-              <AnimatedLights />
-              <Stage environment="studio" intensity={0.5} shadows preset="rembrandt" adjustCamera={false}>
-                <PhoneModel progress={progress} />
-              </Stage>
-              <OrbitControls enableZoom={false} enablePan={false} />
-            </Suspense>
-          </Canvas>
-        ) : (
-          <div className="mobile-model-container">
-            <MobileDeviceDisplay 
-              deviceType="phone" 
-              variant="hero" 
-            />
-          </div>
-        )}
+        <Canvas camera={{ position: [0, 6, 22], fov: 75 }}>
+          <Suspense fallback={<Html center><div className="loading">Загрузка...</div></Html>}>
+            <ambientLight intensity={0.2} />
+            <hemisphereLight intensity={0.15} color="#ffffff" groundColor="#bbbbff" />
+            <AnimatedLights />
+            <Stage environment="studio" intensity={0.5} shadows preset="rembrandt" adjustCamera={false}>
+              <PhoneModel progress={progress} />
+            </Stage>
+            <OrbitControls enableZoom={false} enablePan={false} />
+          </Suspense>
+        </Canvas>
       </div>
 
       <div className="text-container">

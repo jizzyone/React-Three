@@ -4,8 +4,6 @@ import { OrbitControls, Stage, Html, useGLTF } from '@react-three/drei';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
 import LiquidMetalBackground from './LiquidMetalBackground';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
-import MobileDeviceDisplay from './MobileDeviceDisplay';
 
 const TabletModel = () => {
   const { scene } = useGLTF('./galaxy_tab_s8_ultra.glb');
@@ -102,7 +100,7 @@ const TabletFeatures = () => {
       <div style={{ 
         display: 'grid', 
         gap: '2rem',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gridTemplateColumns: 'repeat(2, 1fr)',
       }}>
         <Feature 
           title="Большой экран" 
@@ -195,8 +193,6 @@ const Feature = ({ title, description }: { title: string; description: string })
 };
 
 const TabletScene: React.FC = () => {
-  const { isMobile, isTablet } = useDeviceDetect();
-
   return (
     <div style={{ 
       minHeight: '300vh'
@@ -228,71 +224,60 @@ const TabletScene: React.FC = () => {
             />
           </Suspense>
         </Canvas>
-        
-        {(!isMobile && !isTablet) ? (
-          <Canvas 
-            camera={{ position: [0, 0, 5], fov: 50 }}
-            style={{ 
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: 1
-            }}
-          >
-            <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
-              <ambientLight intensity={0.3} />
-              <spotLight 
-                position={[5, 5, 5]} 
-                angle={0.15} 
-                penumbra={1} 
-                intensity={0.8}
-                color="#ffffff"
-              />
-              <spotLight 
-                position={[-5, 5, 5]} 
-                angle={0.15} 
-                penumbra={1} 
-                intensity={0.4}
-                color="#d1e6ff"
-              />
-              <spotLight 
-                position={[0, -5, 5]} 
-                angle={0.15} 
-                penumbra={1} 
-                intensity={0.2}
-                color="#ffd1e6"
-              />
-              <directionalLight 
-                position={[0, 5, 5]}
-                intensity={0.3}
-                color="#ffffff"
-              />
-              <Stage
-                environment="city"
-                intensity={0.3}
-                preset="rembrandt"
-                adjustCamera={false}
-              >
-                <TabletModel />
-              </Stage>
-              <OrbitControls 
-                enableZoom={false}
-                enablePan={false}
-                enableRotate={false}
-              />
-            </Suspense>
-          </Canvas>
-        ) : (
-          <div className="mobile-tablet-container">
-            <MobileDeviceDisplay 
-              deviceType="tablet" 
-              variant="hero"
+        <Canvas 
+          camera={{ position: [0, 0, 5], fov: 50 }}
+          style={{ 
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1
+          }}
+        >
+          <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
+            <ambientLight intensity={0.3} />
+            <spotLight 
+              position={[5, 5, 5]} 
+              angle={0.15} 
+              penumbra={1} 
+              intensity={0.8}
+              color="#ffffff"
             />
-          </div>
-        )}
-        
+            <spotLight 
+              position={[-5, 5, 5]} 
+              angle={0.15} 
+              penumbra={1} 
+              intensity={0.4}
+              color="#d1e6ff"
+            />
+            <spotLight 
+              position={[0, -5, 5]} 
+              angle={0.15} 
+              penumbra={1} 
+              intensity={0.2}
+              color="#ffd1e6"
+            />
+            <directionalLight 
+              position={[0, 5, 5]}
+              intensity={0.3}
+              color="#ffffff"
+            />
+            <Stage
+              environment="city"
+              intensity={0.3}
+              preset="rembrandt"
+              adjustCamera={false}
+            >
+              <TabletModel />
+            </Stage>
+            <OrbitControls 
+              enableZoom={false}
+              enablePan={false}
+              enableRotate={false}
+            />
+          </Suspense>
+        </Canvas>
         <TabletFeatures />
         <NewSectionText />
       </div>

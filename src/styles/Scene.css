@@ -1,205 +1,205 @@
-  .text-content {
-    position: relative;
-    max-width: 80%;
-  }
+.text-content {
+  position: relative;
+  max-width: 80%;
+}
 
-  @keyframes backgroundShift {
-    0% {
-      background-position: 0% 0%;
-    }
-    50% {
-      background-position: 100% 100%;
-    }
-    100% {
-      background-position: 0% 0%;
-    }
+@keyframes backgroundShift {
+  0% {
+    background-position: 0% 0%;
   }
-  
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
 
-  .background-effect {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: 
-      radial-gradient(circle at 20% 50%, rgba(103, 178, 255, 0.1) 0%, rgba(103, 178, 255, 0) 50%),
-      radial-gradient(circle at 80% 30%, rgba(255, 103, 231, 0.1) 0%, rgba(255, 103, 231, 0) 50%);
-    filter: blur(50px);
-    z-index: 1;
-    animation: backgroundShift 30s ease infinite;
-    background-size: 200% 200%;
-  }
-  
-  .text-content-wrapper {
-    position: relative;
-    height: 200px;
-    width: 100%;
-    display: flex;
-    align-items: left;
-    justify-content: center;
-  }
 
-  .scene-container {
-    position: relative;
-    width: 100%;
-    min-height: 300vh;
-    overflow: hidden;
-  }
-  
-  .canvas-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    overflow: hidden;
-    pointer-events: none;
-  }
-  
-  .model-container {
-    position: relative; /* Изменили с absolute на relative */
-    width: 100%;
-    height: 100vh; /* Изменили с 300vh на 100vh */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-  }
+.background-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(103, 178, 255, 0.1) 0%, rgba(103, 178, 255, 0) 50%),
+    radial-gradient(circle at 80% 30%, rgba(255, 103, 231, 0.1) 0%, rgba(255, 103, 231, 0) 50%);
+  filter: blur(50px);
+  z-index: 1;
+  animation: backgroundShift 30s ease infinite;
+  background-size: 200% 200%;
+}
 
-  .text-container {
-    position: absolute;
-    top: 0;
-    left: 5%;
-    width: 90%;
-    height: 300vh;
-    z-index: 10;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  
-  .text-content {
-    position: sticky;
-    top: 50vh;
-    transform: translateY(-50%);
-    text-align: left;
-    color: white;
-    transition: transform 0.2s ease-out;
-  }
-  .text-content h2 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-  .text-content p {
-    font-size: 1.5rem;
-  }
+.text-content-wrapper {
+  position: relative;
+  height: 200px;
+  width: 100%;
+  display: flex;
+  align-items: left;
+  justify-content: center;
+}
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+.scene-container {
+  position: relative;
+  width: 100%;
+  min-height: 300vh;
+  overflow: hidden;
+}
 
-  .hero-text {
-    position: absolute;
-    top: 20vh;
-    left: 5%;
-    width: 90%;
-    text-align: center;
-    color: white;
-    font-size: 4rem;
-    font-weight: bold;
-    z-index: 3;
-    animation: fadeInUp 1s ease-out;
-  }
-  
-  .hero-text span {
-    display: block;
-    font-size: 2rem;
-    font-weight: normal;
-    margin-top: 1rem;
-  }
-  
-  .hero-subtext {
-    position: absolute;
-    top: 50vh;
-    left: 5%;
-    width: 90%;
-    text-align: center;
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-    z-index: 3;
-    animation: fadeInUp 1s ease-out;
-  }
+.canvas-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
 
-  .text-content-wrapper {
-    position: relative;
-    height: 200px;
-    width: 100%;
-  }
-  
-  .text-content {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
-    text-align: center;
-    will-change: transform, opacity;
-  }
-  
-  .text-content {
-    width: 100%;
-    color: white;
-    text-align: center;
-    will-change: transform, opacity;
-  }
-  
-  .loading {
-    font-size: 1.2rem;
-    color: white;
-  }
-  
-  /* Анимация для текста */
-  .text-content h2,
-  .text-content p {
-    margin: 0;
-    will-change: transform, opacity;
-  }
-  .text-stage {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-  
-  .loading {
-    font-size: 1.2rem;
-    color: white;
-  }
-  
-  .overlay {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    color: white;
-    z-index: 10;
-  }
+.model-container {
+  position: relative; /* Изменили с absolute на relative */
+  width: 100%;
+  height: 100vh; /* Изменили с 300vh на 100vh */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
 
-  .scene-container::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    background: linear-gradient(to bottom, transparent, #1a1a2e);
-    pointer-events: none;
+.text-container {
+  position: absolute;
+  top: 0;
+  left: 5%;
+  width: 90%;
+  height: 300vh;
+  z-index: 10;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.text-content {
+  position: sticky;
+  top: 50vh;
+  transform: translateY(-50%);
+  text-align: left;
+  color: white;
+  transition: transform 0.2s ease-out;
+}
+.text-content h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.text-content p {
+  font-size: 1.5rem;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-text {
+  position: absolute;
+  top: 20vh;
+  left: 5%;
+  width: 90%;
+  text-align: center;
+  color: white;
+  font-size: 4rem;
+  font-weight: bold;
+  z-index: 3;
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-text span {
+  display: block;
+  font-size: 2rem;
+  font-weight: normal;
+  margin-top: 1rem;
+}
+
+.hero-subtext {
+  position: absolute;
+  top: 50vh;
+  left: 5%;
+  width: 90%;
+  text-align: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  z-index: 3;
+  animation: fadeInUp 1s ease-out;
+}
+
+.text-content-wrapper {
+  position: relative;
+  height: 200px;
+  width: 100%;
+}
+
+.text-content {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  text-align: center;
+  will-change: transform, opacity;
+}
+
+.text-content {
+  width: 100%;
+  color: white;
+  text-align: center;
+  will-change: transform, opacity;
+}
+
+.loading {
+  font-size: 1.2rem;
+  color: white;
+}
+
+/* Анимация для текста */
+.text-content h2,
+.text-content p {
+  margin: 0;
+  will-change: transform, opacity;
+}
+.text-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.loading {
+  font-size: 1.2rem;
+  color: white;
+}
+
+.overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: white;
+  z-index: 10;
+}
+
+.scene-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, #1a1a2e);
+  pointer-events: none;
+}

@@ -5,8 +5,6 @@ import { OrbitControls, Stage } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import ColoredProductModel from './ColoredProductModel';
 import '../styles/ProductDetail.css';
-import { useDeviceDetect } from '../hooks/useDeviceDetect';
-import MobileDeviceDisplay from './MobileDeviceDisplay';
 
 interface ColorOption {
   name: string;
@@ -43,7 +41,6 @@ const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [selectedColor, setSelectedColor] = useState(0);
   const navigate = useNavigate();
-  const { isMobile, isTablet } = useDeviceDetect();
   
   const colorOptions: ColorOption[] = [
     { name: 'Phantom Black', color: 'Черный', hex: '#2B2B2B' },
@@ -51,13 +48,6 @@ const ProductDetail: React.FC = () => {
     { name: 'Green', color: 'Зеленый', hex: '#2D4B4A' },
     { name: 'Lavender', color: 'Лавандовый', hex: '#E4D0E3' }
   ];
-
-  const getDeviceType = (): 'phone' | 'watch' | 'tablet' => {
-    if (productId?.includes('phone')) return 'phone';
-    if (productId?.includes('watch')) return 'watch';
-    if (productId?.includes('tab')) return 'tablet';
-    return 'phone';
-  };
 
   const getModelPath = () => {
     switch(productId) {
@@ -84,50 +74,37 @@ const ProductDetail: React.FC = () => {
     }
   };
 
-  const deviceType = getDeviceType();
-  const normalizedColorName = colorOptions[selectedColor].color.toLowerCase();
-
   return (
-    <div className={`product-detail ${isMobile ? 'product-detail--mobile' : ''}`}>
+    <div className="product-detail">
       <div className="product-detail__model">
-        {(!isMobile && !isTablet) ? (
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-            <ambientLight intensity={0.3} />
-            <spotLight 
-              position={[5, 5, 5]} 
-              angle={0.25} 
-              penumbra={0.8} 
-              intensity={1.2} 
+        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+        <ambientLight intensity={0.3} />
+        <spotLight 
+          position={[5, 5, 5]} 
+          angle={0.25} 
+          penumbra={0.8} 
+          intensity={1.2} 
+        />
+        <spotLight 
+          position={[-5, 3, -5]} 
+          angle={0.3} 
+          penumbra={0.5} 
+          intensity={0.8} 
+          color="#b0d0ff"
+        />
+          <Stage environment="city" intensity={0.6}>
+            <ColoredProductModel 
+              modelPath={getModelPath()} 
+              color={colorOptions[selectedColor].hex}
             />
-            <spotLight 
-              position={[-5, 3, -5]} 
-              angle={0.3} 
-              penumbra={0.5} 
-              intensity={0.8} 
-              color="#b0d0ff"
-            />
-            <Stage environment="city" intensity={0.6}>
-              <ColoredProductModel 
-                modelPath={getModelPath()} 
-                color={colorOptions[selectedColor].hex}
-              />
-            </Stage>
-            <OrbitControls 
-              enableZoom={true}
-              enablePan={false}
-              minPolarAngle={Math.PI / 4}
-              maxPolarAngle={Math.PI / 1.5}
-            />
-          </Canvas>
-        ) : (
-          <div className="mobile-product-model">
-            <MobileDeviceDisplay 
-              deviceType={deviceType}
-              variant="detail"
-              color={normalizedColorName}
-            />
-          </div>
-        )}
+          </Stage>
+          <OrbitControls 
+            enableZoom={true}
+            enablePan={false}
+            minPolarAngle={Math.PI / 4}
+            maxPolarAngle={Math.PI / 1.5}
+          />
+        </Canvas>
       </div>
       
       <div className="product-detail__info">
