@@ -81,3 +81,71 @@
   cursor: pointer;
   margin-top: 1rem;
 }
+
+/* Mobile Styles */
+.product-detail--mobile {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: 64px;
+  background: #1a1a2e;
+}
+
+.product-detail--mobile .product-detail__model {
+  height: 50vh;
+  width: 100%;
+}
+
+.product-detail--mobile .product-detail__info--mobile {
+  padding: 1.5rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 24px 24px 0 0;
+  margin-top: -24px;
+  position: relative;
+  z-index: 10;
+}
+
+.product-detail--mobile .product-detail__title {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.product-detail--mobile .product-detail__price {
+  margin: 1.5rem 0;
+}
+
+.product-detail--mobile .price {
+  font-size: 1.75rem;
+  margin: 0;
+}
+
+.product-detail--mobile .color-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.product-detail--mobile .color-option {
+  padding: 0.75rem;
+}
+
+.product-detail--mobile .color-circle {
+  width: 32px;
+  height: 32px;
+}
+
+.product-detail--mobile .color-name {
+  font-size: 0.8rem;
+}
+
+.product-detail--mobile .buy-button {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(103, 178, 255, 0.25);
+}

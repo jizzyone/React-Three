@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stage } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import ColoredProductModel from './ColoredProductModel';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 import '../styles/ProductDetail.css';
 
 interface ColorOption {
@@ -40,7 +41,7 @@ const getPrice = (productId?: string) => {
 const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [selectedColor, setSelectedColor] = useState(0);
-  const navigate = useNavigate();
+  const { isMobile } = useDeviceDetect();
   
   const colorOptions: ColorOption[] = [
     { name: 'Phantom Black', color: 'Черный', hex: '#2B2B2B' },
@@ -74,24 +75,100 @@ const ProductDetail: React.FC = () => {
     }
   };
 
+  if (isMobile) {
+    return (
+      <div className="product-detail product-detail--mobile">
+        <div className="product-detail__model">
+          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+            <ambientLight intensity={0.3} />
+            <spotLight 
+              position={[5, 5, 5]} 
+              angle={0.25} 
+              penumbra={0.8} 
+              intensity={1.2} 
+            />
+            <spotLight 
+              position={[-5, 3, -5]} 
+              angle={0.3} 
+              penumbra={0.5} 
+              intensity={0.8} 
+              color="#b0d0ff"
+            />
+            <Stage environment="city" intensity={0.6}>
+              <ColoredProductModel 
+                modelPath={getModelPath()} 
+                color={colorOptions[selectedColor].hex}
+              />
+            </Stage>
+            <OrbitControls 
+              enableZoom={false}
+              enablePan={false}
+              minPolarAngle={Math.PI / 4}
+              maxPolarAngle={Math.PI / 1.5}
+            />
+          </Canvas>
+        </div>
+        
+        <div className="product-detail__info--mobile">
+          <h1 className="product-detail__title">
+            {productId?.split('-').join(' ').toUpperCase() || 'Телефон'}
+          </h1>
+          
+          <div className="product-detail__price">
+            <span className="price">{getPrice(productId)}</span>
+          </div>
+
+          <div className="product-detail__colors">
+            <h3>Выберите цвет</h3>
+            <div className="color-options">
+              {colorOptions.map((option, index) => (
+                <motion.div
+                  key={option.name}
+                  className={`color-option ${selectedColor === index ? 'active' : ''}`}
+                  onClick={() => setSelectedColor(index)}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div 
+                    className="color-circle"
+                    style={{ backgroundColor: option.hex }}
+                  />
+                  <span className="color-name">{option.color}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          <motion.button
+            className="buy-button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Добавить в корзину
+          </motion.button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="product-detail">
       <div className="product-detail__model">
         <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-        <ambientLight intensity={0.3} />
-        <spotLight 
-          position={[5, 5, 5]} 
-          angle={0.25} 
-          penumbra={0.8} 
-          intensity={1.2} 
-        />
-        <spotLight 
-          position={[-5, 3, -5]} 
-          angle={0.3} 
-          penumbra={0.5} 
-          intensity={0.8} 
-          color="#b0d0ff"
-        />
+          <ambientLight intensity={0.3} />
+          <spotLight 
+            position={[5, 5, 5]} 
+            angle={0.25} 
+            penumbra={0.8} 
+            intensity={1.2} 
+          />
+          <spotLight 
+            position={[-5, 3, -5]} 
+            angle={0.3} 
+            penumbra={0.5} 
+            intensity={0.8} 
+            color="#b0d0ff"
+          />
           <Stage environment="city" intensity={0.6}>
             <ColoredProductModel 
               modelPath={getModelPath()} 
