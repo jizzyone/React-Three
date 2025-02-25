@@ -100,12 +100,7 @@ const ProductDetail: React.FC = () => {
                 color={colorOptions[selectedColor].hex}
               />
             </Stage>
-            <OrbitControls 
-              enableZoom={false}
-              enablePan={false}
-              minPolarAngle={Math.PI / 4}
-              maxPolarAngle={Math.PI / 1.5}
-            />
+            {/* Убираем OrbitControls для мобильной версии */}
           </Canvas>
         </div>
         

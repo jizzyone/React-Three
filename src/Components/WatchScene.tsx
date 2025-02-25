@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import LiquidMetalBackground from './LiquidMetalBackground';
 import WatchSpecs from './WatchSpecs';
 import SecondWatch from './SecondWatch';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 
 const WatchModel = () => {
   const { scene } = useGLTF('./samsung__galaxy__watch_5.glb');
@@ -147,6 +148,9 @@ const Feature = ({ title, description }: { title: string; description: string })
 };
 
 const WatchScene: React.FC = () => {
+  const { isMobile, isTablet } = useDeviceDetect();
+  const isTouchDevice = isMobile || isTablet;
+
   return (
     <div style={{ position: 'relative' }}>
       {/* Фоновый эффект */}
@@ -158,7 +162,10 @@ const WatchScene: React.FC = () => {
         height: '100vh',
         zIndex: 1 
       }}>
-        <Canvas camera={{ position: [0, 0, 2.5], fov: 75 }}>
+        <Canvas 
+          camera={{ position: [0, 0, 2.5], fov: 75 }}
+          style={{ pointerEvents: isTouchDevice ? 'none' : 'auto' }}
+        >
           <Suspense fallback={null}>
             <LiquidMetalBackground 
               colorA={new THREE.Color('#4a0072')}
@@ -178,7 +185,10 @@ const WatchScene: React.FC = () => {
         justifyContent: 'center',
         zIndex: 2
       }}>
-        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <Canvas 
+          camera={{ position: [0, 0, 5], fov: 50 }}
+          style={{ pointerEvents: isTouchDevice ? 'none' : 'auto' }}
+        >
           <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
           <ambientLight intensity={1.5} />
             <directionalLight 
@@ -297,7 +307,8 @@ const WatchScene: React.FC = () => {
           style={{ 
             position: 'absolute',
             width: '100%',
-            height: '100%'
+            height: '100%',
+            pointerEvents: isTouchDevice ? 'none' : 'auto'
           }}
         >
           <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>

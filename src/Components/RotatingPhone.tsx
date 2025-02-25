@@ -4,6 +4,7 @@ import { OrbitControls, Stage, Html, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { motion } from 'framer-motion';
 import '../styles/RotatingPhone.css';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 
 const PhoneModel = () => {
   const { scene } = useGLTF('./samsung_s23_ultra_free.glb');
@@ -69,6 +70,9 @@ const OrderForm = () => {
 };
 
 const RotatingPhone: React.FC = () => {
+  const { isMobile, isTablet } = useDeviceDetect();
+  const isTouchDevice = isMobile || isTablet;
+
   return (
     <div className="rotating-phone-container">
       <div className="form-container">
@@ -78,6 +82,7 @@ const RotatingPhone: React.FC = () => {
         <Canvas 
           camera={{ position: [0, 0, 8], fov: 50 }}
           className="canvas-container"
+          style={{ pointerEvents: isTouchDevice ? 'none' : 'auto' }}
         >
           <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
             <ambientLight intensity={0.3} />
@@ -105,4 +110,4 @@ const RotatingPhone: React.FC = () => {
   );
 };
 
-export default RotatingPhone; 
+export default RotatingPhone;

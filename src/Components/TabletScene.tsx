@@ -4,15 +4,21 @@ import { OrbitControls, Stage, Html, useGLTF } from '@react-three/drei';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as THREE from 'three';
 import LiquidMetalBackground from './LiquidMetalBackground';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 
 const TabletModel = () => {
   const { scene } = useGLTF('./galaxy_tab_s8_ultra.glb');
   const modelRef = useRef<THREE.Group>(null);
   const { scrollYProgress } = useScroll();
+  const { isMobile, isTablet } = useDeviceDetect();
+  const isTouchDevice = isMobile || isTablet;
 
   const INITIAL_X = 1;
   const INITIAL_ROTATION = Math.PI;
   const INITIAL_ROTATION_OFFSET = -0.3;
+
+  // Адаптируем начальный масштаб для мобильных устройств
+  const initialScale = isTouchDevice ? 0.6 : 0.8;
 
   useEffect(() => {
     const unsubscribe = scrollYProgress.onChange((progress: number) => {
@@ -32,8 +38,11 @@ const TabletModel = () => {
         // Вторая фаза - центрирование и масштабирование
         else {
           const centerProgress = (progress - 0.5) * 2;
-          const targetX = THREE.MathUtils.lerp(-1.5, -0.2, centerProgress);
-          const targetScale = THREE.MathUtils.lerp(0.8, 0.6, centerProgress);
+          // Адаптируем целевую позицию X для мобильных устройств
+          const targetX = THREE.MathUtils.lerp(-1.5, isTouchDevice ? 0 : -0.2, centerProgress);
+          // Уменьшаем масштаб сильнее для мобильных устройств
+          const endScale = isTouchDevice ? 0.4 : 0.6;
+          const targetScale = THREE.MathUtils.lerp(initialScale, endScale, centerProgress);
           
           modelRef.current.position.x = targetX;
           modelRef.current.scale.set(targetScale, targetScale, targetScale);
@@ -42,13 +51,13 @@ const TabletModel = () => {
     });
 
     return () => unsubscribe();
-  }, [scrollYProgress]);
+  }, [scrollYProgress, isTouchDevice, initialScale]);
 
   return (
     <primitive 
       ref={modelRef}
       object={scene} 
-      scale={0.8}
+      scale={initialScale}
       position={[INITIAL_X, 0, 0]} 
       rotation={[-0.1, INITIAL_ROTATION + INITIAL_ROTATION_OFFSET, 0]} 
     />
@@ -193,6 +202,9 @@ const Feature = ({ title, description }: { title: string; description: string })
 };
 
 const TabletScene: React.FC = () => {
+  const { isMobile, isTablet } = useDeviceDetect();
+  const isTouchDevice = isMobile || isTablet;
+
   return (
     <div style={{ 
       minHeight: '300vh'
@@ -214,7 +226,8 @@ const TabletScene: React.FC = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            zIndex: 1
+            zIndex: 1,
+            pointerEvents: isTouchDevice ? 'none' : 'auto'
           }}
         >
           <Suspense fallback={null}>
@@ -232,7 +245,8 @@ const TabletScene: React.FC = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            zIndex: 1
+            zIndex: 1,
+            pointerEvents: isTouchDevice ? 'none' : 'auto'
           }}
         >
           <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>

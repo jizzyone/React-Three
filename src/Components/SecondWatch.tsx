@@ -2,10 +2,16 @@ import React, { useRef, useEffect } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
 
 const SecondWatch = () => {
   const { scene } = useGLTF('./second_watch.glb');
   const modelRef = useRef<THREE.Group>(null);
+  const { isMobile, isTablet } = useDeviceDetect();
+
+  // Определяем размер в зависимости от устройства
+  const watchScale = isMobile || isTablet ? 1.2 : 2.0;
+  const watchPosition = isMobile || isTablet ? [1, 0.1, 0] : [2, 0.1, 0];
 
   useEffect(() => {
     if (scene) {
@@ -45,9 +51,9 @@ const SecondWatch = () => {
       <primitive 
         ref={modelRef}
         object={scene} 
-        scale={2.0}
-        // Немного поднимаем модель, чтобы все части были видны
-        position={[2, 0.1, 0]}
+        scale={watchScale}
+        // Изменяем положение в зависимости от устройства
+        position={watchPosition}
       />
     </group>
   );
