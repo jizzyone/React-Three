@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stage } from '@react-three/drei';
@@ -41,7 +41,22 @@ const getPrice = (productId?: string) => {
 const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [selectedColor, setSelectedColor] = useState(0);
-  const { isMobile } = useDeviceDetect();
+  const { isMobile, isTablet } = useDeviceDetect();
+  const isTouchDevice = isMobile || isTablet;
+  
+  // Добавим useEffect для установки overflow-x: hidden на body
+  useEffect(() => {
+    // Сохраняем текущее значение overflow-x
+    const originalOverflowX = document.body.style.overflowX;
+    
+    // Устанавливаем overflow-x: hidden на body
+    document.body.style.overflowX = 'hidden';
+    
+    // Восстанавливаем первоначальное значение при размонтировании
+    return () => {
+      document.body.style.overflowX = originalOverflowX;
+    };
+  }, []);
   
   const colorOptions: ColorOption[] = [
     { name: 'Phantom Black', color: 'Черный', hex: '#2B2B2B' },
@@ -79,7 +94,10 @@ const ProductDetail: React.FC = () => {
     return (
       <div className="product-detail product-detail--mobile">
         <div className="product-detail__model">
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+          <Canvas 
+            camera={{ position: [0, 0, 5], fov: 45 }}
+            style={{ pointerEvents: isTouchDevice ? 'none' : 'auto' }}
+          >
             <ambientLight intensity={0.3} />
             <spotLight 
               position={[5, 5, 5]} 
@@ -149,7 +167,10 @@ const ProductDetail: React.FC = () => {
   return (
     <div className="product-detail">
       <div className="product-detail__model">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+        <Canvas 
+          camera={{ position: [0, 0, 5], fov: 45 }}
+          style={{ pointerEvents: isTouchDevice ? 'none' : 'auto' }}
+        >
           <ambientLight intensity={0.3} />
           <spotLight 
             position={[5, 5, 5]} 
