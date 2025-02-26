@@ -4,6 +4,9 @@ import '../styles/Scene.css';
 import { Stage, Html, useGLTF, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import LiquidMetalBackground from './LiquidMetalBackground';
+import { motion } from 'framer-motion';
+import { useDeviceDetect } from '../hooks/useDeviceDetect';
+
 
 const AnimatedLights: React.FC = () => {
   const spotLight1 = useRef<THREE.SpotLight>(null);
@@ -149,10 +152,63 @@ const PhoneModel: React.FC<{ progress: number, isMobile: boolean }> = ({ progres
   );
 };
 
+// Мобильная версия Scene
+const MobileScene: React.FC = () => {
+  return (
+    <div className="mobile-scene-container">
+      <div className="canvas-background">
+        <Canvas camera={{ position: [0, 0, 2], fov: 45 }}>
+          <Suspense fallback={null}>
+            <LiquidMetalBackground />
+          </Suspense>
+        </Canvas>
+      </div>
+      
+      <div className="mobile-hero-content">
+        <h1 className="mobile-hero-title">
+          Новый noNamePhone Ultra
+          <span>Переосмысление технологий</span>
+        </h1>
+        
+        <div className="mobile-hero-visual">
+          <motion.img 
+            src="/Phone_mobile_photo.png" 
+            alt="NoName Phone Ultra"
+            className="mobile-hero-image"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          />
+          <div className="phone-glow-effect wide"></div>
+        </div>
+      </div>
+      
+      <div className="mobile-features-section">
+        <div className="mobile-feature-card">
+          <h2>Почувствуйте будущее</h2>
+          <p>Технологии становятся ближе с новым noNamePhone Ultra. Испытайте непревзойденную производительность и современные решения.</p>
+        </div>
+        
+        <div className="mobile-feature-card">
+          <h2>Создан для вас</h2>
+          <p>Идеальное сочетание формы и содержания. Каждая деталь noNamePhone Ultra создана для улучшения вашего опыта использования.</p>
+        </div>
+        
+        <div className="mobile-feature-card">
+          <h2>Инновации в каждой детали</h2>
+          <p>Откройте новые возможности с революционными функциями и технологиями, которые устанавливают новые стандарты.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Полная Scene с выбором версии в зависимости от устройства
 const Scene: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
+  const { isMobile: deviceIsMobile, isTablet } = useDeviceDetect();
 
   useEffect(() => {
     // Определение мобильного устройства
@@ -173,11 +229,15 @@ const Scene: React.FC = () => {
     };
   }, []);
 
+  // Используем или deviceIsMobile из хука, или isMobile из стейта
+  const isMobileView = deviceIsMobile || isTablet || isMobile;
+
   const progress = sceneRef.current
     ? Math.min(scrollY / (sceneRef.current.scrollHeight - window.innerHeight), 1)
     : 0;
 
-  return (
+  // Рендерим соответствующую версию компонента
+  return isMobileView ? <MobileScene /> : (
     <div ref={sceneRef} className="scene-container">
       <div className="canvas-background">
         <Canvas camera={{ position: [0, 0, 2], fov: 45 }}>
@@ -199,9 +259,9 @@ const Scene: React.FC = () => {
             <hemisphereLight intensity={0.15} color="#ffffff" groundColor="#bbbbff" />
             <AnimatedLights />
             <Stage environment="studio" intensity={0.5} shadows preset="rembrandt" adjustCamera={false}>
-              <PhoneModel progress={progress} isMobile={isMobile} />
+              <PhoneModel progress={progress} isMobile={false} />
             </Stage>
-            {!isMobile && <OrbitControls enableZoom={false} enablePan={false} />}
+            <OrbitControls enableZoom={false} enablePan={false} />
           </Suspense>
         </Canvas>
       </div>

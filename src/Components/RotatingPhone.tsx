@@ -48,30 +48,83 @@ const OrderForm = () => {
       transition={{ duration: 0.8 }}
       className="order-form"
     >
-      <h2>Заказать noNamePhone</h2>
+      <h2>Остались вопросы?</h2>
       <form>
         <input className="input-field" type="text" placeholder="Ваше имя" />
-        <input className="input-field" type="email" placeholder="Email" />
-        <select className="input-field">
-          <option value="">Выберите модель</option>
-          <option value="256">256 ГБ</option>
-          <option value="512">512 ГБ</option>
-        </select>
+        <input className="input-field" type="tel" placeholder="Номер телефона" />
         <motion.button
           className="submit-button"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          Оформить заказ
+          Запросить звонок
         </motion.button>
       </form>
     </motion.div>
   );
 };
 
+// Мобильная версия компонента
+const MobileRotatingPhone: React.FC = () => {
+  return (
+    <div className="mobile-rotating-phone-container">
+      <div className="mobile-background-effect"></div>
+      
+      <div className="mobile-form-container">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mobile-order-form"
+        >
+          <h2>Остались вопросы?</h2>
+          <form>
+            <input className="input-field" type="text" placeholder="Ваше имя" />
+            <input className="input-field" type="tel" placeholder="Номер телефона" />
+            
+            <motion.button
+              className="submit-button"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Запросить звонок
+            </motion.button>
+          </form>
+          
+          <div className="order-benefits">
+            <div className="benefit-item">
+              <span className="benefit-icon">
+                <img src="../chronometer.png" alt="timer" />
+              </span>
+              <span className="benefit-text">Быстрое решение вопросов</span>
+            </div>
+            <div className="benefit-item">
+              <span className="benefit-icon">
+                <img src="../support.png" alt="support" />
+              </span>
+              <span className="benefit-text">Поддержка с 10:00 - 19:00 (МСК) каждый день</span>
+            </div>
+            <div className="benefit-item">
+              <span className="benefit-icon">
+                <img src="../ask-question.png" alt="asks" />
+              </span>
+              <span className="benefit-text">Обрабатываем все запросы</span>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
 const RotatingPhone: React.FC = () => {
   const { isMobile, isTablet } = useDeviceDetect();
   const isTouchDevice = isMobile || isTablet;
+
+  // Выбираем версию компонента в зависимости от устройства
+  if (isTouchDevice) {
+    return <MobileRotatingPhone />;
+  }
 
   return (
     <div className="rotating-phone-container">

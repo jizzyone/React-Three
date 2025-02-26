@@ -8,149 +8,149 @@ import WatchSpecs from './WatchSpecs';
 import SecondWatch from './SecondWatch';
 import { useDeviceDetect } from '../hooks/useDeviceDetect';
 
-const WatchModel = () => {
-  const { scene } = useGLTF('./samsung__galaxy__watch_5.glb');
-  const modelRef = useRef<THREE.Group>(null);
-  const { scrollYProgress } = useScroll();
-
+// Мобильная версия WatchScene, полностью переработанная
+const MobileWatchScene: React.FC = () => {
+  // Эффект для включения прокрутки
   useEffect(() => {
-    if (scene) {
-      scene.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          if (child.material instanceof THREE.MeshStandardMaterial) {
-            child.material.metalness = 0.9;
-            child.material.roughness = 0.1;
-            child.material.envMapIntensity = 1.5;
-          }
-        }
-      });
-    }
-  }, [scene]);
-
-  // Базовая анимация вращения
-  useEffect(() => {
-    let animationFrameId: number;
-    let rotation = 0;
-
-    const animate = () => {
-      if (modelRef.current) {
-        rotation += 0.003;
-        modelRef.current.rotation.y = rotation;
-      }
-      animationFrameId = requestAnimationFrame(animate);
+    // Очищаем все что может мешать прокрутке
+    const originalStyle = {
+      overflow: document.body.style.overflow,
+      height: document.body.style.height,
+      position: document.body.style.position
     };
 
-    animate();
-    return () => cancelAnimationFrame(animationFrameId);
+    // Принудительно включаем прокрутку
+    document.body.style.overflow = 'visible';
+    document.body.style.height = 'auto';
+    document.body.style.position = 'static';
+    
+    // Убираем все фиксированные элементы, которые могут мешать прокрутке
+    const scrollContainer = document.documentElement;
+    scrollContainer.scrollTop = 0;
+    
+    return () => {
+      // Восстанавливаем стили при размонтировании
+      document.body.style.overflow = originalStyle.overflow;
+      document.body.style.height = originalStyle.height;
+      document.body.style.position = originalStyle.position;
+    };
   }, []);
 
-  // Анимация перемещения при скролле
-  useEffect(() => {
-    const unsubscribe = scrollYProgress.onChange((progress: number) => {
-      if (modelRef.current) {
-        // Ограничиваем прогресс значением 0.7
-        const limitedProgress = Math.min(progress, 0.7);
-        
-        // Вычисляем прозрачность
-        if (progress > 0.6) {
-          const fadeOutProgress = (progress - 0.6) / 0.1;
-          modelRef.current.traverse((child) => {
-            if (child instanceof THREE.Mesh && child.material) {
-              child.material.transparent = true;
-              child.material.opacity = 1 - fadeOutProgress;
-            }
-          });
-        } else {
-          modelRef.current.traverse((child) => {
-            if (child instanceof THREE.Mesh && child.material) {
-              child.material.opacity = 1;
-            }
-          });
-        }
-
-        const targetX = limitedProgress * 6;
-        modelRef.current.position.x = THREE.MathUtils.lerp(0, targetX, limitedProgress);
-        
-        const startScale = 30.0;
-        const endScale = 40.0;
-        const currentScale = THREE.MathUtils.lerp(startScale, endScale, limitedProgress);
-        modelRef.current.scale.setScalar(currentScale);
-        
-        modelRef.current.position.z = THREE.MathUtils.lerp(-1, -4, limitedProgress);
-        modelRef.current.rotation.x = THREE.MathUtils.lerp(0, 0.3, limitedProgress);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [scrollYProgress]);
-
   return (
-    <primitive 
-      ref={modelRef}
-      object={scene} 
-      scale={30.0}
-      position={[0, 0, -1]}
-    />
-  );
-};
+    <div className="mobile-watch-page">
+      {/* Заголовок страницы */}
+      <header className="mobile-watch-header">
+        <h1>NoName Watch 5 Pro</h1>
+        <p>Инновационные часы для активной жизни</p>
+      </header>
 
-const WatchFeatures = () => {
-  return (
-    <div style={{ color: 'white', width: '100%' }}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.1 }}
-      >
-        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '2rem' }}>NoName Watch 5</h2>
-          <div style={{ display: 'grid', gap: '2rem' }}>
-            <Feature 
-              title="Мониторинг здоровья" 
-              description="Непрерывное отслеживание пульса, качества сна и уровня стресса"
-            />
-            <Feature 
-              title="Защита от воды" 
-              description="Водонепроницаемость 5ATM и защита IP68"
-            />
-            <Feature 
-              title="Батарея" 
-              description="До 50 часов работы без подзарядки"
-            />
-            <Feature 
-              title="Фитнес-функции" 
-              description="Более 90 режимов тренировок и автоматическое распознавание активности"
-            />
-          </div>
+      {/* Изображение часов */}
+      <div className="mobile-watch-image-container">
+        <img 
+          src="/Watch_mobile_photo.png" 
+          alt="NoName Watch 5 Pro"
+          className="mobile-watch-main-image"
+        />
+      </div>
+
+      {/* Блоки с характеристиками */}
+      <div className="mobile-watch-features">
+        <div className="mobile-feature-block">
+          <h2>Мониторинг здоровья</h2>
+          <p>Непрерывное отслеживание пульса, качества сна и уровня стресса с расширенными алгоритмами анализа данных.</p>
         </div>
         
-        <WatchSpecs/>
-      </motion.div>
+        <div className="mobile-feature-block">
+          <h2>Защита от воды</h2>
+          <p>Водонепроницаемость 5ATM и защита IP68 позволяют использовать часы при плавании и занятиях водными видами спорта.</p>
+        </div>
+        
+        <div className="mobile-feature-block">
+          <h2>Батарея</h2>
+          <p>До 50 часов работы без подзарядки благодаря оптимизированному энергопотреблению и емкому аккумулятору.</p>
+        </div>
+        
+        <div className="mobile-feature-block">
+          <h2>Фитнес-функции</h2>
+          <p>Более 90 режимов тренировок и автоматическое распознавание активности для точного отслеживания всех ваших занятий.</p>
+        </div>
+      </div>
+
+      {/* Секция с техническими характеристиками */}
+      <section className="mobile-specs-section">
+        <h2>Технические характеристики</h2>
+        
+        <div className="mobile-specs-list">
+          <div className="mobile-spec-block">
+            <div className="spec-icon-container display-icon">
+              <span className="spec-icon">🔍</span>
+            </div>
+            <h3>Дисплей</h3>
+            <ul>
+              <li>Super AMOLED</li>
+              <li>450 x 450 пикселей</li>
+              <li>Всегда активный режим</li>
+            </ul>
+          </div>
+          
+          <div className="mobile-spec-block">
+            <div className="spec-icon-container processor-icon">
+              <span className="spec-icon">⚡</span>
+            </div>
+            <h3>Процессор</h3>
+            <ul>
+              <li>Exynos W930</li>
+              <li>Dual Core 1.18GHz</li>
+              <li>1.5GB RAM</li>
+            </ul>
+          </div>
+          
+          <div className="mobile-spec-block">
+            <div className="spec-icon-container connection-icon">
+              <span className="spec-icon">📱</span>
+            </div>
+            <h3>Связь</h3>
+            <ul>
+              <li>Bluetooth 5.2</li>
+              <li>Wi-Fi</li>
+              <li>NFC для платежей</li>
+            </ul>
+          </div>
+          
+          <div className="mobile-spec-block">
+            <div className="spec-icon-container protection-icon">
+              <span className="spec-icon">💧</span>
+            </div>
+            <h3>Защита</h3>
+            <ul>
+              <li>5ATM + IP68</li>
+              <li>Закаленное стекло</li>
+              <li>Прочный корпус</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Дополнительный текст в конце страницы */}
+      <div className="mobile-watch-footer">
+        <p>Превосходство в каждой детали</p>
+      </div>
     </div>
   );
 };
 
-const Feature = ({ title, description }: { title: string; description: string }) => {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        padding: '1.5rem',
-        borderRadius: '15px',
-        backdropFilter: 'blur(10px)'
-      }}
-    >
-      <h3 style={{ marginBottom: '0.5rem' }}>{title}</h3>
-      <p style={{ opacity: 0.8 }}>{description}</p>
-    </motion.div>
-  );
-};
+// Десктопная версия остается без изменений...
 
+// Основной компонент WatchScene, который выбирает версию
 const WatchScene: React.FC = () => {
   const { isMobile, isTablet } = useDeviceDetect();
   const isTouchDevice = isMobile || isTablet;
 
+  return isTouchDevice ? <MobileWatchScene /> : <DesktopWatchScene />;
+};
+
+// Копируем весь код десктопной версии из предыдущего кода
+const DesktopWatchScene: React.FC = () => {
   return (
     <div style={{ position: 'relative' }}>
       {/* Фоновый эффект */}
@@ -162,10 +162,7 @@ const WatchScene: React.FC = () => {
         height: '100vh',
         zIndex: 1 
       }}>
-        <Canvas 
-          camera={{ position: [0, 0, 2.5], fov: 75 }}
-          style={{ pointerEvents: isTouchDevice ? 'none' : 'auto' }}
-        >
+        <Canvas camera={{ position: [0, 0, 2.5], fov: 75 }}>
           <Suspense fallback={null}>
             <LiquidMetalBackground 
               colorA={new THREE.Color('#4a0072')}
@@ -185,12 +182,9 @@ const WatchScene: React.FC = () => {
         justifyContent: 'center',
         zIndex: 2
       }}>
-        <Canvas 
-          camera={{ position: [0, 0, 5], fov: 50 }}
-          style={{ pointerEvents: isTouchDevice ? 'none' : 'auto' }}
-        >
+        <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
           <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
-          <ambientLight intensity={1.5} />
+            <ambientLight intensity={1.5} />
             <directionalLight 
               position={[5, 5, 5]} 
               intensity={2} 
@@ -286,10 +280,71 @@ const WatchScene: React.FC = () => {
       <div style={{ 
         padding: '6rem 2rem',
         position: 'relative',
-        // background: 'linear-gradient(to bottom, rgba(26, 26, 46, 0.8), rgba(15, 15, 30, 0.9))',
         zIndex: 20
       }}>
-        <WatchFeatures />
+        <div style={{ color: 'white', width: '100%' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.1 }}
+          >
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+              <h2 style={{ fontSize: '2.5rem', marginBottom: '2rem' }}>NoName Watch 5</h2>
+              <div style={{ display: 'grid', gap: '2rem' }}>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '1.5rem',
+                    borderRadius: '15px',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <h3 style={{ marginBottom: '0.5rem' }}>Мониторинг здоровья</h3>
+                  <p style={{ opacity: 0.8 }}>Непрерывное отслеживание пульса, качества сна и уровня стресса</p>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '1.5rem',
+                    borderRadius: '15px',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <h3 style={{ marginBottom: '0.5rem' }}>Защита от воды</h3>
+                  <p style={{ opacity: 0.8 }}>Водонепроницаемость 5ATM и защита IP68</p>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '1.5rem',
+                    borderRadius: '15px',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <h3 style={{ marginBottom: '0.5rem' }}>Батарея</h3>
+                  <p style={{ opacity: 0.8 }}>До 50 часов работы без подзарядки</p>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '1.5rem',
+                    borderRadius: '15px',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <h3 style={{ marginBottom: '0.5rem' }}>Фитнес-функции</h3>
+                  <p style={{ opacity: 0.8 }}>Более 90 режимов тренировок и автоматическое распознавание активности</p>
+                </motion.div>
+              </div>
+            </div>
+            
+            <WatchSpecs/>
+          </motion.div>
+        </div>
       </div>
 
       {/* Вторая модель часов */}
@@ -299,7 +354,6 @@ const WatchScene: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // background: 'linear-gradient(to bottom, rgba(26, 26, 46, 0.8), rgba(15, 15, 30, 0.9))',
         zIndex: 21
       }}>
         <Canvas 
@@ -307,8 +361,7 @@ const WatchScene: React.FC = () => {
           style={{ 
             position: 'absolute',
             width: '100%',
-            height: '100%',
-            pointerEvents: isTouchDevice ? 'none' : 'auto'
+            height: '100%'
           }}
         >
           <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
@@ -379,7 +432,90 @@ const WatchScene: React.FC = () => {
   );
 };
 
-// Предзагрузка моделей
+// Компонент WatchModel для десктопной версии
+const WatchModel = () => {
+  const { scene } = useGLTF('./samsung__galaxy__watch_5.glb');
+  const modelRef = useRef<THREE.Group>(null);
+  const { scrollYProgress } = useScroll();
+
+  useEffect(() => {
+    if (scene) {
+      scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          if (child.material instanceof THREE.MeshStandardMaterial) {
+            child.material.metalness = 0.9;
+            child.material.roughness = 0.1;
+            child.material.envMapIntensity = 1.5;
+          }
+        }
+      });
+    }
+  }, [scene]);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    let rotation = 0;
+
+    const animate = () => {
+      if (modelRef.current) {
+        rotation += 0.003;
+        modelRef.current.rotation.y = rotation;
+      }
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.onChange((progress: number) => {
+      if (modelRef.current) {
+        const limitedProgress = Math.min(progress, 0.7);
+        
+        if (progress > 0.6) {
+          const fadeOutProgress = (progress - 0.6) / 0.1;
+          modelRef.current.traverse((child) => {
+            if (child instanceof THREE.Mesh && child.material) {
+              child.material.transparent = true;
+              child.material.opacity = 1 - fadeOutProgress;
+            }
+          });
+        } else {
+          modelRef.current.traverse((child) => {
+            if (child instanceof THREE.Mesh && child.material) {
+              child.material.opacity = 1;
+            }
+          });
+        }
+
+        const targetX = limitedProgress * 6;
+        modelRef.current.position.x = THREE.MathUtils.lerp(0, targetX, limitedProgress);
+        
+        const startScale = 30.0;
+        const endScale = 40.0;
+        const currentScale = THREE.MathUtils.lerp(startScale, endScale, limitedProgress);
+        modelRef.current.scale.setScalar(currentScale);
+        
+        modelRef.current.position.z = THREE.MathUtils.lerp(-1, -4, limitedProgress);
+        modelRef.current.rotation.x = THREE.MathUtils.lerp(0, 0.3, limitedProgress);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [scrollYProgress]);
+
+  return (
+    <primitive 
+      ref={modelRef}
+      object={scene} 
+      scale={30.0}
+      position={[0, 0, -1]}
+    />
+  );
+};
+
+// Предзагрузка моделей для десктопной версии
 useGLTF.preload('./samsung__galaxy__watch_5.glb');
 useGLTF.preload('./second_watch.glb');
 

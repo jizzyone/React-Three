@@ -40,7 +40,7 @@
   color: white;
 }
 
-Copy.submit-button {
+.submit-button {
   padding: 1rem 2rem;
   border-radius: 8px;
   border: none;
@@ -124,4 +124,8 @@ Copy.submit-button {
 .loading {
   color: white;
   font-size: 1rem;
+}
+
+.benefit-text{
+  font-size: 1.2rem;
 }

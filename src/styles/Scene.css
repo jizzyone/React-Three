@@ -203,3 +203,537 @@
   background: linear-gradient(to bottom, transparent, #1a1a2e);
   pointer-events: none;
 }
+
+/* Стили для мобильной версии Scene.tsx */
+.mobile-scene-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #1a1a2e;
+  overflow: hidden;
+}
+
+.mobile-hero-content {
+  position: relative;
+  width: 100%;
+  padding: 70px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.mobile-hero-title {
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.mobile-hero-title span {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: normal;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+.mobile-hero-visual {
+  width: 100%;
+  max-width: 340px;
+  margin: 25px auto;
+}
+
+.mobile-features-section {
+  position: relative;
+  padding: 60px 20px;
+  z-index: 2;
+}
+
+.mobile-feature-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 30px 20px;
+  margin-bottom: 20px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-feature-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #67b2ff 0%, #ff67e7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mobile-feature-card p {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Стили для мобильной версии RotatingPhone.tsx */
+.mobile-rotating-phone-container {
+  min-height: 100vh;
+  width: 100%;
+  padding: 80px 20px 40px;
+  position: relative;
+  background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-background-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(103, 178, 255, 0.15) 0%, rgba(103, 178, 255, 0) 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 103, 231, 0.15) 0%, rgba(255, 103, 231, 0) 50%);
+  filter: blur(60px);
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.mobile-form-container {
+  width: 100%;
+  max-width: 500px;
+  z-index: 2;
+}
+
+.mobile-order-form {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.mobile-order-form h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  text-align: center;
+  background: linear-gradient(135deg, #67b2ff 0%, #ff67e7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mobile-form-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.option-item input[type="radio"] {
+  margin-right: 8px;
+  accent-color: #67b2ff;
+}
+
+.option-item label {
+  color: white;
+  font-size: 0.9rem;
+}
+
+.order-benefits {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.benefit-icon {
+  font-size: 1.5rem;
+}
+
+.benefit-text {
+  color: white;
+  font-size: 0.9rem;
+}
+
+/* Улучшения полей формы */
+.mobile-order-form .input-field {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.mobile-order-form .submit-button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #67b2ff, #ff67e7);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4px 15px rgba(103, 178, 255, 0.3);
+}
+
+/* Анимации для мобильной версии */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-feature-card {
+  animation: fadeInUp 0.8s ease forwards;
+  opacity: 0;
+}
+
+.mobile-feature-card:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.mobile-feature-card:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.mobile-feature-card:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+/* Медиа запросы для адаптации */
+@media (max-width: 480px) {
+  .mobile-hero-title {
+    font-size: 2rem;
+  }
+  
+  .mobile-feature-card h2 {
+    font-size: 1.5rem;
+  }
+  
+  .mobile-order-form h2 {
+    font-size: 1.7rem;
+  }
+}
+
+/* Стили для мобильной версии Scene.tsx */
+.mobile-scene-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #1a1a2e;
+  overflow: hidden;
+}
+
+.mobile-hero-content {
+  position: relative;
+  width: 100%;
+  padding: 120px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.mobile-hero-title {
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.mobile-hero-title span {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: normal;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+.mobile-hero-visual {
+  width: 100%;
+  max-width: 400px;  /* Уменьшил с 500px до 400px */
+  margin: 15px auto;  /* Уменьшил отступ с 30px до 15px */
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.mobile-hero-image {
+  width: 100%;
+  max-width: 360px;  /* Уменьшил с 420px до 360px */
+  height: auto;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.25));
+  z-index: 2;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.phone-glow-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle at center,
+    rgba(103, 178, 255, 0.3) 0%,
+    rgba(255, 103, 231, 0.1) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(40px);
+  z-index: 1;
+  opacity: 0.6;
+  animation: pulse 8s infinite alternate;
+}
+
+.phone-glow-effect.wide {
+  width: 320px;  /* Уменьшил с 380px до 320px */
+  height: 480px;  /* Уменьшил с 550px до 480px */
+  border-radius: 140px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+
+.mobile-features-section {
+  position: relative;
+  padding: 60px 20px;
+  z-index: 2;
+}
+
+.mobile-feature-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 30px 20px;
+  margin-bottom: 20px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-feature-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #67b2ff 0%, #ff67e7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mobile-feature-card p {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Стили для мобильной версии RotatingPhone.tsx */
+.mobile-rotating-phone-container {
+  min-height: 100vh;
+  width: 100%;
+  padding: 80px 20px 40px;
+  position: relative;
+  background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-background-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(103, 178, 255, 0.15) 0%, rgba(103, 178, 255, 0) 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 103, 231, 0.15) 0%, rgba(255, 103, 231, 0) 50%);
+  filter: blur(60px);
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.mobile-form-container {
+  width: 100%;
+  max-width: 500px;
+  z-index: 2;
+}
+
+.mobile-order-form {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.mobile-order-form h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  text-align: center;
+  background: linear-gradient(135deg, #67b2ff 0%, #ff67e7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mobile-form-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.option-item input[type="radio"] {
+  margin-right: 8px;
+  accent-color: #67b2ff;
+}
+
+.option-item label {
+  color: white;
+  font-size: 0.9rem;
+}
+
+.order-benefits {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.benefit-icon {
+  font-size: 1.5rem;
+}
+
+.benefit-text {
+  color: white;
+  font-size: 0.9rem;
+}
+
+/* Улучшения полей формы */
+.mobile-order-form .input-field {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.mobile-order-form .submit-button {
+  width: 100%;
+  padding: 16px;
+  margin-top: 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #67b2ff, #ff67e7);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4px 15px rgba(103, 178, 255, 0.3);
+}
+
+/* Анимации для мобильной версии */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-feature-card {
+  animation: fadeInUp 0.8s ease forwards;
+  opacity: 0;
+}
+
+.mobile-feature-card:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.mobile-feature-card:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.mobile-feature-card:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+/* Медиа запросы для адаптации */
+@media (max-width: 480px) {
+  .mobile-hero-title {
+    font-size: 2rem;
+  }
+  
+  .mobile-feature-card h2 {
+    font-size: 1.5rem;
+  }
+  
+  .mobile-order-form h2 {
+    font-size: 1.7rem;
+  }
+}

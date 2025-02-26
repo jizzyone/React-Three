@@ -11,7 +11,8 @@ const SecondWatch = () => {
 
   // Определяем размер в зависимости от устройства
   const watchScale = isMobile || isTablet ? 1.2 : 2.0;
-  const watchPosition = isMobile || isTablet ? [1, 0.1, 0] : [2, 0.1, 0];
+  // Увеличиваем первый параметр для сдвига вправо на мобильных устройствах
+  const watchPosition = isMobile || isTablet ? [2.5, 0.1, 0] : [2, 0.1, 0];
 
   useEffect(() => {
     if (scene) {
