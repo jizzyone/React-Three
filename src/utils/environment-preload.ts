@@ -1,5 +1,3 @@
-import { presetsObj } from '@react-three/drei/helpers/environment-assets'
-
 // Определяем тип для пресетов
 export const ENVIRONMENT_FILES = {
     city: '/environments/potsdamer_platz_2k.hdr',

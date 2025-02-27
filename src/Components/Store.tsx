@@ -54,11 +54,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, price, image }) => {
     );
   };
 
-interface ProductSectionProps {
-title: string;
-products: Product[];
-}
-
 const ProductSection: React.FC<{ title: string; products: Product[] }> = ({ title, products }) => (
   <div className="product-section">
     <motion.h2 

@@ -1,5 +1,5 @@
 import React, { Suspense, useRef, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stage, Html, useGLTF } from '@react-three/drei';
 import { motion, useScroll } from 'framer-motion';
 import * as THREE from 'three';
@@ -139,17 +139,10 @@ const MobileWatchScene: React.FC = () => {
   );
 };
 
-// Десктопная версия остается без изменений...
-
-// Основной компонент WatchScene, который выбирает версию
-const WatchScene: React.FC = () => {
-  const { isMobile, isTablet } = useDeviceDetect();
-  const isTouchDevice = isMobile || isTablet;
-
-  return isTouchDevice ? <MobileWatchScene /> : <DesktopWatchScene />;
-};
-
-// Копируем весь код десктопной версии из предыдущего кода
+// Десктопная версия WatchScene
+// Полностью переработанный компонент DesktopWatchScene
+// Десктопная версия WatchScene
+// Десктопная версия WatchScene
 const DesktopWatchScene: React.FC = () => {
   return (
     <div style={{ position: 'relative' }}>
@@ -176,7 +169,7 @@ const DesktopWatchScene: React.FC = () => {
       <div style={{ 
         height: '100vh',
         position: 'sticky',
-        top: 0,
+        top: '5%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -184,7 +177,7 @@ const DesktopWatchScene: React.FC = () => {
       }}>
         <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
           <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
-            <ambientLight intensity={1.5} />
+          <ambientLight intensity={1.5} />
             <directionalLight 
               position={[5, 5, 5]} 
               intensity={2} 
@@ -275,12 +268,12 @@ const DesktopWatchScene: React.FC = () => {
           </motion.p>
         </div>
       </div>
-
-      {/* Основной контент */}
+        
+      {/* Основной контент - перемещен на один уровень вверх из вложенности в текстовый блок */}
       <div style={{ 
-        padding: '6rem 2rem',
+        padding: '3rem 2rem', 
         position: 'relative',
-        zIndex: 20
+        zIndex: 4
       }}>
         <div style={{ color: 'white', width: '100%' }}>
           <motion.div
@@ -354,15 +347,18 @@ const DesktopWatchScene: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 21
+        zIndex: 5,
+        marginTop: '20vh'
       }}>
         <Canvas 
           camera={{ position: [0, 0, 5], fov: 50 }}
           style={{ 
             position: 'absolute',
             width: '100%',
-            height: '100%'
+            height: '100%',
+            background: 'transparent'
           }}
+          gl={{ alpha: true }}
         >
           <Suspense fallback={<Html center><div className="loading">Загрузка модели...</div></Html>}>
             <ambientLight intensity={2} />
@@ -432,14 +428,18 @@ const DesktopWatchScene: React.FC = () => {
   );
 };
 
-// Компонент WatchModel для десктопной версии
+// Компонент WatchModel
 const WatchModel = () => {
   const { scene } = useGLTF('./samsung__galaxy__watch_5.glb');
   const modelRef = useRef<THREE.Group>(null);
-  const { scrollYProgress } = useScroll();
-
+  
+  // Используем ref для хранения текущего прогресса скролла
+  const scrollProgressRef = useRef(0);
+  
+  // Обрабатываем материалы при загрузке
   useEffect(() => {
     if (scene) {
+      console.log("Scene loaded successfully");
       scene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           if (child.material instanceof THREE.MeshStandardMaterial) {
@@ -452,58 +452,81 @@ const WatchModel = () => {
     }
   }, [scene]);
 
+  // Настраиваем нативный слушатель скролла
   useEffect(() => {
-    let animationFrameId: number;
-    let rotation = 0;
-
-    const animate = () => {
-      if (modelRef.current) {
-        rotation += 0.003;
-        modelRef.current.rotation.y = rotation;
-      }
-      animationFrameId = requestAnimationFrame(animate);
+    const updateScrollProgress = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      scrollProgressRef.current = Math.max(0, Math.min(1, scrollTop / scrollHeight));
     };
-
-    animate();
-    return () => cancelAnimationFrame(animationFrameId);
+    
+    // Инициализируем прогресс
+    updateScrollProgress();
+    window.addEventListener('scroll', updateScrollProgress);
+    
+    return () => {
+      window.removeEventListener('scroll', updateScrollProgress);
+    };
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = scrollYProgress.onChange((progress: number) => {
-      if (modelRef.current) {
-        const limitedProgress = Math.min(progress, 0.7);
-        
-        if (progress > 0.6) {
-          const fadeOutProgress = (progress - 0.6) / 0.1;
-          modelRef.current.traverse((child) => {
-            if (child instanceof THREE.Mesh && child.material) {
-              child.material.transparent = true;
-              child.material.opacity = 1 - fadeOutProgress;
-            }
-          });
-        } else {
-          modelRef.current.traverse((child) => {
-            if (child instanceof THREE.Mesh && child.material) {
-              child.material.opacity = 1;
-            }
-          });
+  // Применяем все анимации в useFrame для максимальной надежности
+  useFrame((state) => {
+    if (!modelRef.current) return;
+    
+    // Базовое вращение (независимо от скролла)
+    modelRef.current.rotation.y += 0.003;
+    
+    // Получаем текущий прогресс скролла
+    const progress = scrollProgressRef.current;
+    
+    // Ограничиваем прогресс для анимации
+    const limitedProgress = Math.min(progress, 0.7);
+    
+    // Применяем эффекты анимации на основе прогресса
+    
+    // 1. Движение ВНИЗ по оси Y вместо смещения вправо
+    const targetY = limitedProgress * -8; // Отрицательное значение для движения вниз
+    modelRef.current.position.y = THREE.MathUtils.lerp(modelRef.current.position.y, targetY, 0.1);
+    
+    // Минимальное движение вправо (опционально, можно убрать)
+    const targetX = limitedProgress * 2; // Значительно уменьшено
+    modelRef.current.position.x = THREE.MathUtils.lerp(modelRef.current.position.x, targetX, 0.1);
+    
+    // 2. Изменение масштаба
+    const startScale = 30.0;
+    const endScale = 40.0;
+    const currentScale = THREE.MathUtils.lerp(startScale, endScale, limitedProgress);
+    modelRef.current.scale.setScalar(currentScale);
+    
+    // 3. Изменение глубины
+    const targetZ = THREE.MathUtils.lerp(-1, -4, limitedProgress);
+    modelRef.current.position.z = THREE.MathUtils.lerp(modelRef.current.position.z, targetZ, 0.1);
+    
+    // 4. Наклон по оси X (уменьшен для лучшей совместимости с движением вниз)
+    const targetRotationX = THREE.MathUtils.lerp(0, 0.3, limitedProgress);
+    modelRef.current.rotation.x = THREE.MathUtils.lerp(modelRef.current.rotation.x, targetRotationX, 0.1);
+    
+    // 5. Прозрачность при необходимости
+    if (progress > 0.6) {
+      const fadeOutProgress = (progress - 0.6) / 0.1;
+      const targetOpacity = 1 - fadeOutProgress;
+      
+      modelRef.current.traverse((child) => {
+        if (child instanceof THREE.Mesh && child.material) {
+          child.material.transparent = true;
+          
+          // Плавно изменяем прозрачность
+          if (typeof child.material.opacity === 'number') {
+            child.material.opacity = THREE.MathUtils.lerp(
+              child.material.opacity,
+              targetOpacity,
+              0.1
+            );
+          }
         }
-
-        const targetX = limitedProgress * 6;
-        modelRef.current.position.x = THREE.MathUtils.lerp(0, targetX, limitedProgress);
-        
-        const startScale = 30.0;
-        const endScale = 40.0;
-        const currentScale = THREE.MathUtils.lerp(startScale, endScale, limitedProgress);
-        modelRef.current.scale.setScalar(currentScale);
-        
-        modelRef.current.position.z = THREE.MathUtils.lerp(-1, -4, limitedProgress);
-        modelRef.current.rotation.x = THREE.MathUtils.lerp(0, 0.3, limitedProgress);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [scrollYProgress]);
+      });
+    }
+  });
 
   return (
     <primitive 
@@ -515,7 +538,16 @@ const WatchModel = () => {
   );
 };
 
-// Предзагрузка моделей для десктопной версии
+
+// Основной компонент WatchScene
+const WatchScene: React.FC = () => {
+  const { isMobile, isTablet } = useDeviceDetect();
+  const isTouchDevice = isMobile || isTablet;
+
+  return isTouchDevice ? <MobileWatchScene /> : <DesktopWatchScene />;
+};
+
+// Предзагрузка моделей
 useGLTF.preload('./samsung__galaxy__watch_5.glb');
 useGLTF.preload('./second_watch.glb');
 

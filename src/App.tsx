@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useLayoutEffect, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import gsap from 'gsap';
 import Scene from './Components/Scene';
 import Header from './Components/Header';
@@ -9,12 +9,10 @@ import RotatingPhone from './Components/RotatingPhone';
 import WatchScene from './Components/WatchScene';
 import TabletScene from './Components/TabletScene';
 import Store from './Components/Store';
-import { useGLTF } from '@react-three/drei';
 import ProductDetail from './Components/ProductDetail';
 import './App.css';
 import './styles/MobileResponsive.css';
 import './styles/MobileMenu.css';
-import { ModelPreloader } from './Components/ModelPreloader';
 import { useDeviceDetect } from './hooks/useDeviceDetect';
 import MobileDeviceDisplay from './Components/MobileDeviceDisplay';
 // Импортируем и адаптируем функцию для предзагрузки окружений
