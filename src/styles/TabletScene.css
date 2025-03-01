@@ -344,11 +344,478 @@
   }
 }
 
-/* Принудительно включаем прокрутку на странице */
-body {
-  overscroll-behavior: none;
-  overflow-y: auto !important;
-  position: static !important;
-  height: auto !important;
-  width: 100% !important;
+/* Стили для статической десктопной версии */
+.tablet-static-container {
+  min-height: 300vh;
+  background: linear-gradient(180deg, #1a237e 0%, #0f3460 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.tablet-sticky-wrapper {
+  height: 100vh;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tablet-image-container {
+  position: absolute;
+  z-index: 5;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tablet-image {
+  max-height: 70vh;
+  max-width: 90%;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.3));
+}
+
+.tablet-features {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.tablet-features h2 {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: scale(1.02);
+}
+
+.feature-card h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.feature-card p {
+  opacity: 0.8;
+}
+
+.tablet-design {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.tablet-design h2 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.tablet-design p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tablet-features h2 {
+    font-size: 2.5rem;
+  }
+}
+
+.tablet-static-container {
+  min-height: 300vh;
+  background: linear-gradient(180deg, #1a237e 0%, #0f3460 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.tablet-sticky-wrapper {
+  height: 100vh;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.tablet-3d-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.tablet-features {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.tablet-features h2 {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: scale(1.02);
+}
+
+.feature-card h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.feature-card p {
+  opacity: 0.8;
+}
+
+.tablet-design {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.tablet-design h2 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.tablet-design p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tablet-features h2 {
+    font-size: 2.5rem;
+  }
+}
+
+.tablet-static-container {
+  height: 100vh; /* Высота равна экрану */
+  background: linear-gradient(180deg, #1a237e 0%, #0f3460 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.tablet-sticky-wrapper {
+  height: 100vh;
+  width: 100%;
+  position: relative; /* Изменено с sticky на relative */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.tablet-3d-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.tablet-features {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.tablet-features h2 {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: scale(1.02);
+}
+
+.feature-card h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.feature-card p {
+  opacity: 0.8;
+}
+
+.tablet-design {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.tablet-design h2 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.tablet-design p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+/* Добавляем стили для индикатора прогресса */
+.scroll-progress-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  text-align: center;
+  color: white;
+  z-index: 20;
+}
+
+.scroll-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.scroll-thumb {
+  height: 100%;
+  background: white;
+  border-radius: 4px;
+  transition: width 0.1s;
+}
+
+.scroll-text {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tablet-features h2 {
+    font-size: 2.5rem;
+  }
+}.tablet-static-container {
+  height: 100vh; /* Фиксированная высота равная высоте экрана */
+  width: 100%;
+  background: linear-gradient(180deg, #1a237e 0%, #0f3460 100%);
+  position: fixed; /* Фиксированная позиция вместо relative */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 50; /* Высокий z-index, чтобы быть поверх остального контента */
+}
+
+.tablet-sticky-wrapper {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.tablet-3d-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.tablet-features {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.tablet-features h2 {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: scale(1.02);
+}
+
+.feature-card h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.feature-card p {
+  opacity: 0.8;
+}
+
+.tablet-design {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.tablet-design h2 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.tablet-design p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+/* Добавляем стили для индикатора прогресса */
+.scroll-progress-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  text-align: center;
+  color: white;
+  z-index: 20;
+}
+
+.scroll-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.scroll-thumb {
+  height: 100%;
+  background: white;
+  border-radius: 4px;
+  transition: width 0.1s;
 }
