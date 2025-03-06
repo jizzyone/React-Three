@@ -12,6 +12,7 @@ import Store from './Components/Store';
 import ProductDetail from './Components/ProductDetail';
 import './App.css';
 import './styles/MobileResponsive.css';
+import './styles/browser-compatibility.css';
 import './styles/MobileMenu.css';
 import { useDeviceDetect } from './hooks/useDeviceDetect';
 import MobileDeviceDisplay from './Components/MobileDeviceDisplay';
@@ -31,6 +32,14 @@ const fallbackImagePaths = [
   '/fallbacks/tablet_rotate.png'
 ];
 
+// Мобильные изображения для всех устройств
+const mobileImagePaths = [
+  '/mobile/phone_hero_black.png',
+  '/mobile/watch_hero.png',
+  '/mobile/tablet_hero.png',
+  '/mobile/phone_detail_black.png'
+];
+
 function App() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -38,6 +47,7 @@ function App() {
   const loaderRef = useRef(null);
   const contentRef = useRef(null);
   const { isMobile, isTablet, isSamsungBrowser, supportsWebGL } = useDeviceDetect();
+  const loadingTimeoutRef = useRef<number | null>(null);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -46,85 +56,176 @@ function App() {
   useEffect(() => {
     gsap.set(contentRef.current, { opacity: 0 });
 
+    // Принудительно завершаем загрузку через 10 секунд
+    loadingTimeoutRef.current = window.setTimeout(() => {
+      if (loading) {
+        console.log('Loading timeout reached, forcing completion');
+        completeLoading();
+      }
+    }, 10000); // 10 секунд максимум на загрузку
+
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Выносим completeLoading в отдельную функцию, чтобы использовать её и в таймауте и при обычной загрузке
+  const completeLoading = () => {
+    // Очищаем таймаут, если загрузка завершилась нормально
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
+      loadingTimeoutRef.current = null;
+    }
+
+    const tl = gsap.timeline({
+      onComplete: () => setLoading(false)
+    });
+
+    tl.to(loaderRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.inOut'
+    })
+    .to(contentRef.current, {
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, '-=0.3');
+  };
+
+  useEffect(() => {
     const preloadAssets = async () => {
       try {
-        // Общие изображения для предзагрузки (фоны и заглушки)
-        let imageUrls = [
-          ...fallbackImagePaths
-        ];
-
-        // Добавляем только необходимые статические изображения для всех мобильных устройств
-        if (isMobile || isTablet || isSamsungBrowser) {
-          imageUrls = [
-            ...imageUrls,
-            '/mobile/phone_hero_black.png',
-            '/mobile/watch_hero.png',
-            '/mobile/tablet_hero.png',
-            '/mobile/phone_detail_black.png'
-          ];
+        // Используем разные стратегии загрузки в зависимости от браузера
+        if (isSamsungBrowser) {
+          // Для Samsung Browser упрощаем процесс загрузки
+          // Загружаем только самые необходимые изображения
+          preloadMinimalAssets();
         } else {
-          // Для десктопа загружаем изображения
-          imageUrls = [
-            ...imageUrls,
-            'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-kv.jpg',
-            'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-camera.jpg',
-            'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-spen.jpg'
-          ];
-          
-          // Предзагружаем HDR-окружения только для десктопа
-          if (!isSamsungBrowser) {
-            await preloadEnvironments();
-          }
+          // Для остальных браузеров используем полную загрузку
+          preloadFullAssets();
         }
-        
-        let loadedImages = 0;
-        const totalImages = imageUrls.length;
-
-        const updateProgress = () => {
-          loadedImages++;
-          setProgress((loadedImages / totalImages) * 100);
-          
-          if (loadedImages === totalImages) {
-            completeLoading();
-          }
-        };
-
-        if (totalImages === 0) {
-          completeLoading();
-          return;
-        }
-
-        imageUrls.forEach(url => {
-          const img = new Image();
-          img.onload = updateProgress;
-          img.onerror = updateProgress; // Даже если изображение не загрузилось, продолжаем
-          img.src = url;
-        });
       } catch (error) {
         console.error('Error preloading assets:', error);
-        completeLoading(); // Завершаем загрузку даже при ошибке
+        // Даже в случае ошибки, завершаем загрузку
+        completeLoading();
       }
     };
 
-    const completeLoading = () => {
-      const tl = gsap.timeline({
-        onComplete: () => setLoading(false)
-      });
+    // Упрощенная загрузка активов для проблемных браузеров
+    const preloadMinimalAssets = () => {
+      // Загружаем только основные изображения для мобильной версии
+      const criticalImageUrl = isMobile || isTablet ? 
+        '/mobile/phone_hero_black.png' : 
+        fallbackImagePaths[0];
+      
+      const img = new Image();
+      img.onload = () => {
+        // Устанавливаем промежуточный прогресс, чтобы пользователь видел движение
+        setProgress(50);
+        
+        // Небольшая задержка для плавности
+        setTimeout(() => {
+          setProgress(100);
+          setTimeout(completeLoading, 300);
+        }, 500);
+      };
+      
+      img.onerror = () => {
+        // Даже если изображение не загрузилось, продолжаем
+        console.warn('Failed to load critical image, continuing anyway');
+        setProgress(100);
+        setTimeout(completeLoading, 300);
+      };
+      
+      img.src = criticalImageUrl;
+    };
 
-      tl.to(loaderRef.current, {
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power2.inOut'
-      })
-      .to(contentRef.current, {
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out'
-      }, '-=0.3');
+    // Полная загрузка активов для нормальных браузеров
+    const preloadFullAssets = async () => {
+      // Общие изображения для предзагрузки (фоны и заглушки)
+      let imageUrls = [...fallbackImagePaths];
+
+      // Добавляем мобильные изображения для мобильных устройств
+      if (isMobile || isTablet) {
+        imageUrls = [...imageUrls, ...mobileImagePaths];
+      } else {
+        // Для десктопа загружаем дополнительные изображения
+        imageUrls = [
+          ...imageUrls,
+          'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-kv.jpg',
+          'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-camera.jpg',
+          'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-spen.jpg'
+        ];
+        
+        // Предзагружаем HDR-окружения только для десктопа с поддержкой WebGL
+        if (supportsWebGL) {
+          try {
+            await preloadEnvironments();
+          } catch (error) {
+            console.warn('Failed to preload environments:', error);
+          }
+        }
+      }
+      
+      // Устанавливаем минимальный прогресс, чтобы пользователь видел, что что-то происходит
+      setProgress(10);
+      
+      let loadedImages = 0;
+      const totalImages = imageUrls.length;
+      
+      // Минимальный порог для завершения загрузки (70% изображений)
+      const minThreshold = Math.floor(totalImages * 0.7);
+
+      const updateProgress = () => {
+        loadedImages++;
+        const percentage = Math.min(90, (loadedImages / totalImages) * 100);
+        setProgress(percentage);
+        
+        // Если загрузили минимальный порог или все изображения, завершаем загрузку
+        if (loadedImages >= minThreshold || loadedImages === totalImages) {
+          setProgress(100);
+          setTimeout(completeLoading, 300);
+        }
+      };
+
+      if (totalImages === 0) {
+        setProgress(100);
+        setTimeout(completeLoading, 300);
+        return;
+      }
+
+      // Устанавливаем максимальный таймаут для каждого изображения
+      const loadImageWithTimeout = (url: string) => {
+        return new Promise<void>((resolve) => {
+          const img = new Image();
+          
+          // Таймаут для загрузки отдельного изображения (3 секунды)
+          const timeout = setTimeout(() => {
+            console.warn(`Image loading timeout for: ${url}`);
+            resolve();
+          }, 3000);
+          
+          img.onload = img.onerror = () => {
+            clearTimeout(timeout);
+            resolve();
+          };
+          
+          img.src = url;
+        });
+      };
+
+      // Загружаем все изображения с таймаутом и обновляем прогресс
+      for (const url of imageUrls) {
+        await loadImageWithTimeout(url);
+        updateProgress();
+      }
     };
 
     preloadAssets();
-  }, [isMobile, isTablet, isSamsungBrowser]);
+  }, [isMobile, isTablet, isSamsungBrowser, supportsWebGL]);
 
   // Генерируем контент в зависимости от типа устройства и браузера
   const MainContent = () => {

@@ -6,25 +6,45 @@ import { motion } from 'framer-motion';
 const Loader: React.FC<{ progress: number }> = ({ progress }) => {
     const progressBarRef = useRef(null);
     const logoRef = useRef(null);
+    const animationRef = useRef<gsap.core.Tween | null>(null);
 
     useEffect(() => {
-        // Анимация прогресс-бара
-        gsap.to(progressBarRef.current, {
-            width: `${progress}%`,
-            duration: 0.4,
-            ease: 'power2.out'
-        });
+        // Безопасное применение анимации
+        try {
+            // Анимация прогресс-бара
+            if (progressBarRef.current) {
+                if (animationRef.current) {
+                    animationRef.current.kill();
+                }
+                
+                animationRef.current = gsap.to(progressBarRef.current, {
+                    width: `${progress}%`,
+                    duration: 0.4,
+                    ease: 'power2.out'
+                });
+            }
 
-        // Пульсация логотипа
-        gsap.to(logoRef.current, {
-            scale: 1.05,
-            duration: 1,
-            repeat: -1,
-            yoyo: true,
-            ease: 'power1.inOut'
-        });
+            // Пульсация логотипа (только если logoRef существует)
+            if (logoRef.current) {
+                gsap.to(logoRef.current, {
+                    scale: 1.05,
+                    duration: 1,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: 'power1.inOut'
+                });
+            }
+        } catch (error) {
+            console.error("Error in Loader animation:", error);
+            
+            // Если анимация не работает, обновляем ширину напрямую через DOM
+            if (progressBarRef.current) {
+                (progressBarRef.current as HTMLElement).style.width = `${progress}%`;
+            }
+        }
     }, [progress]);
 
+    // Более надежные варианты для анимации
     const loaderVariants = {
         initial: { scale: 0.8, opacity: 0 },
         animate: { 
@@ -40,15 +60,17 @@ const Loader: React.FC<{ progress: number }> = ({ progress }) => {
     return (
         <div className="loader-container">
             <div className="loader-content">
-                <motion.div
+                <div
                     ref={logoRef}
                     className="loader-logo"
-                    variants={loaderVariants}
-                    initial="initial"
-                    animate="animate"
+                    style={{ 
+                        opacity: 1, 
+                        transform: 'scale(1)',
+                        transition: 'transform 0.5s ease-out, opacity 0.5s ease-out'
+                    }}
                 >
                     noNamePhone
-                </motion.div>
+                </div>
                 <div className="loader-progress-container">
                     <div 
                         ref={progressBarRef} 
@@ -62,4 +84,4 @@ const Loader: React.FC<{ progress: number }> = ({ progress }) => {
     );
 };
 
-export default Loader; 
+export default Loader;

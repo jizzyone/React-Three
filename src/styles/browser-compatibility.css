@@ -1,0 +1,96 @@
+/* Стили для улучшения совместимости с разными браузерами */
+/* Глобальные исправления для проблемных браузеров */
+.samsung-browser {
+    /* Отключаем сложные анимации для Samsung Browser */
+    --animation-multiplier: 0;
+    
+    /* Улучшаем производительность снимая прозрачность и эффекты размытия */
+    --backdrop-filter-enabled: none;
+    --blur-effect-enabled: none;
+    
+    /* Отключаем трансформации с использованием 3D */
+    --use-fallback-transforms: 1;
+  }
+  
+  .yandex-browser {
+    /* Уменьшаем интенсивность анимаций для Yandex Browser */
+    --animation-multiplier: 0.5;
+    
+    /* Ограничиваем использование backdrop-filter */
+    --backdrop-filter-enabled: none;
+  }
+  
+  .no-webgl-support {
+    /* Отключаем все связанные с WebGL элементы */
+    --disable-3d-effects: 1;
+  }
+  
+  /* Применение переменных к конкретным компонентам */
+  .samsung-browser .loader-container,
+  .yandex-browser .loader-container {
+    background: #1a1a2e;
+  }
+  
+  .samsung-browser .loader-logo,
+  .yandex-browser .loader-logo {
+    /* Избегаем использования gradient для текста, что может вызывать проблемы */
+    background: transparent;
+    color: white;
+  }
+  
+  /* Фиксы для анимаций и трансформаций */
+  .samsung-browser .mobile-feature-card,
+  .yandex-browser .mobile-feature-card {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  /* Отключаем backdrop-filter в проблемных браузерах */
+  .samsung-browser .header,
+  .samsung-browser .mobile-menu,
+  .samsung-browser .feature-card,
+  .samsung-browser .product-card,
+  .yandex-browser .header,
+  .yandex-browser .mobile-menu {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(17, 17, 27, 0.9) !important;
+  }
+  
+  /* Исправление для анимации загрузки */
+  .samsung-browser .loader-progress-bar,
+  .yandex-browser .loader-progress-bar {
+    transition: width 0.4s linear !important;
+  }
+  
+  /* Исправление для прокрутки на мобильных устройствах */
+  body.mobile-device,
+  body.tablet-device {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Специальные стили для отключения GSAP анимаций, если они вызывают проблемы */
+  .samsung-browser .gsap-animated {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Гарантируем, что контент видим даже при проблемах с загрузкой */
+  .samsung-browser .app > div:last-child,
+  .yandex-browser .app > div:last-child {
+    opacity: 1 !important;
+  }
+  
+  /* Обеспечиваем корректное отображение placeholder изображений */
+  .device-placeholder {
+    background: #2a2a40 !important; /* Статический цвет фона вместо градиента */
+  }
+  
+  /* Исправляем проблемы с отображением текста на MobileDeviceDisplay */
+  .device-placeholder-text {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+  }
