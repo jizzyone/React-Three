@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NoName Phone - Инновационные технологии</title>
+  <title>NoName Watch - Инновационные часы</title>
   <style>
     /* Базовые стили */
     body, html {
@@ -72,6 +72,8 @@
       border-radius: 20px;
       font-weight: bold;
       cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
     }
     
     /* Основной контент */
@@ -88,6 +90,7 @@
       justify-content: center;
       text-align: center;
       padding: 20px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #4a0072 100%);
     }
     
     .hero h1 {
@@ -101,10 +104,11 @@
       opacity: 0.8;
     }
     
-    .phone-image {
-      max-width: 80%;
+    .watch-image {
+      max-width: 70%;
       height: auto;
       margin: 2rem 0;
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
     }
     
     /* Секция характеристик */
@@ -142,9 +146,10 @@
       font-size: 1.5rem;
     }
     
-    /* Секция технических характеристик */
+    /* Секция специальных характеристик */
     .specs {
       padding: 4rem 20px;
+      background: linear-gradient(0deg, #1a1a2e 0%, #4a0072 100%);
     }
     
     .specs-container {
@@ -165,7 +170,7 @@
     }
     
     .spec-card {
-      background-color: rgba(255, 255, 255, 0.05);
+      background-color: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       padding: 2rem;
     }
@@ -176,14 +181,18 @@
       padding-bottom: 0.5rem;
     }
     
-    .spec-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
+    .spec-list {
+      list-style: none;
+      padding: 0;
     }
     
-    .spec-label {
-      opacity: 0.7;
+    .spec-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .spec-list li:last-child {
+      border-bottom: none;
     }
     
     /* Мобильное меню */
@@ -194,6 +203,29 @@
       color: white;
       font-size: 1.5rem;
       cursor: pointer;
+    }
+    
+    /* Эффект свечения для изображения */
+    .image-container {
+      position: relative;
+    }
+    
+    .glow-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(
+        circle at center,
+        rgba(103, 178, 255, 0.3) 0%,
+        rgba(255, 103, 231, 0.1) 40%,
+        transparent 70%
+      );
+      border-radius: 50%;
+      filter: blur(40px);
+      z-index: 1;
     }
     
     /* Медиа-запросы для адаптивности */
@@ -240,10 +272,13 @@
   <main class="content">
     <!-- Секция героя -->
     <section class="hero">
-      <h1>Новый noNamePhone Ultra</h1>
-      <p>Переосмысление технологий</p>
+      <h1>NoName Watch 5 Pro</h1>
+      <p>Инновационные часы для активной жизни</p>
       
-      <img src="/Phone_mobile_photo.png" alt="NoName Phone" class="phone-image">
+      <div class="image-container">
+        <div class="glow-effect"></div>
+        <img src="/Watch_mobile_photo.png" alt="NoName Watch" class="watch-image">
+      </div>
       
       <a href="/store" class="cta-button">Купить сейчас</a>
     </section>
@@ -255,18 +290,18 @@
         
         <div class="feature-grid">
           <div class="feature-card">
-            <h3>Революционная камера</h3>
-            <p>200 МП основная камера с продвинутой системой ИИ для идеальных фото в любых условиях.</p>
+            <h3>Мониторинг здоровья</h3>
+            <p>Непрерывное отслеживание пульса, качества сна и уровня стресса с расширенными алгоритмами анализа данных.</p>
           </div>
           
           <div class="feature-card">
-            <h3>Мощный процессор</h3>
-            <p>Snapdragon 8 Gen 2 для исключительной производительности и энергоэффективности.</p>
+            <h3>Защита от воды</h3>
+            <p>Водонепроницаемость 5ATM и защита IP68 позволяют использовать часы при плавании и занятиях водными видами спорта.</p>
           </div>
           
           <div class="feature-card">
-            <h3>Впечатляющий дисплей</h3>
-            <p>6.8" Dynamic AMOLED 2X с частотой 120 Гц для плавной анимации и ярких цветов.</p>
+            <h3>Батарея</h3>
+            <p>До 50 часов работы без подзарядки благодаря оптимизированному энергопотреблению и емкому аккумулятору.</p>
           </div>
         </div>
       </div>
@@ -280,54 +315,42 @@
         <div class="specs-grid">
           <div class="spec-card">
             <h3>Дисплей</h3>
-            <div class="spec-item">
-              <span class="spec-label">Тип</span>
-              <span class="spec-value">Dynamic AMOLED 2X</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Размер</span>
-              <span class="spec-value">6.8 дюймов</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Разрешение</span>
-              <span class="spec-value">3088 x 1440 (500 ppi)</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Частота</span>
-              <span class="spec-value">1-120 Гц адаптивная</span>
-            </div>
+            <ul class="spec-list">
+              <li>Super AMOLED</li>
+              <li>450 x 450 пикселей</li>
+              <li>Всегда активный режим</li>
+            </ul>
           </div>
           
           <div class="spec-card">
-            <h3>Производительность</h3>
-            <div class="spec-item">
-              <span class="spec-label">Процессор</span>
-              <span class="spec-value">Snapdragon 8 Gen 2</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">ОЗУ</span>
-              <span class="spec-value">8/12 ГБ LPDDR5X</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Накопитель</span>
-              <span class="spec-value">256/512 ГБ UFS 4.0</span>
-            </div>
+            <h3>Процессор</h3>
+            <ul class="spec-list">
+              <li>Exynos W930</li>
+              <li>Dual Core 1.18GHz</li>
+              <li>1.5GB RAM</li>
+            </ul>
           </div>
           
           <div class="spec-card">
-            <h3>Камера</h3>
-            <div class="spec-item">
-              <span class="spec-label">Основная</span>
-              <span class="spec-value">200 МП, f/1.7</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Ультраширокая</span>
-              <span class="spec-value">12 МП, f/2.2</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-label">Телефото</span>
-              <span class="spec-value">10 МП, 3x/10x зум</span>
-            </div>
+            <h3>Связь</h3>
+            <ul class="spec-list">
+              <li>Bluetooth 5.2</li>
+              <li>Wi-Fi</li>
+              <li>NFC для платежей</li>
+            </ul>
+          </div>
+          
+          <div class="spec-card">
+            <h3>Датчики</h3>
+            <ul class="spec-list">
+              <li>Акселерометр</li>
+              <li>Барометр</li>
+              <li>Биоэлектрический датчик</li>
+              <li>Гироскоп</li>
+              <li>Геомагнитный датчик</li>
+              <li>Датчик освещения</li>
+              <li>Оптический датчик сердцебиения</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -336,7 +359,7 @@
   
   <!-- Простой скрипт для мобильного меню -->
   <script>
-    // Для простоты на статической странице мобильное меню будет делать редирект
+    // Для простоты на статической странице мобильное меню будет перенаправлять
     document.querySelector('.mobile-menu-button').addEventListener('click', function() {
       alert('Перейдите на полную версию сайта для доступа к меню');
     });
