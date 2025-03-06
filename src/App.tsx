@@ -5,21 +5,159 @@ import TechSpecs from './Components/TechSpecs';
 import Loader from './Components/Loader';
 import Store from './Components/Store';
 import ProductDetail from './Components/ProductDetail';
+import BrowserCompatibleFallback from './Components/BrowserCompatibleFallback';
 import './App.css';
 import './styles/MobileResponsive.css';
 import './styles/MobileMenu.css';
-import './styles/browser-compatibility.css';
+import './styles/BrowserCompatibleFallback.css';
 import { useDeviceDetect } from './hooks/useDeviceDetect';
-import MobileDeviceDisplay from './Components/MobileDeviceDisplay';
 
-// Лениво загружаем тяжелые компоненты чтобы ускорить первоначальную загрузку
+// Лениво загружаем тяжелые компоненты для быстрой первоначальной загрузки
 const Scene = React.lazy(() => import('./Components/Scene'));
 const RotatingPhone = React.lazy(() => import('./Components/RotatingPhone'));
 const WatchScene = React.lazy(() => import('./Components/WatchScene'));
 const TabletScene = React.lazy(() => import('./Components/TabletScene'));
 
-// Объявляем максимальное время загрузки
-const MAX_LOADING_TIME = 5000; // 5 секунд максимум
+// Данные для контента заглушек
+const phoneData = {
+  title: "Новый noNamePhone Ultra",
+  subtitle: "Переосмысление технологий",
+  mainImageUrl: "/mobile/phone_hero_black.png",
+  features: [
+    {
+      title: "Революционная камера",
+      description: "200 МП основная камера с продвинутой системой ИИ для идеальных фото в любых условиях."
+    },
+    {
+      title: "Мощный процессор",
+      description: "Snapdragon 8 Gen 2 для исключительной производительности и энергоэффективности."
+    },
+    {
+      title: "Впечатляющий дисплей",
+      description: "6.8\" Dynamic AMOLED 2X с частотой 120 Гц для плавной анимации и ярких цветов."
+    }
+  ],
+  specs: [
+    {
+      category: "Дисплей",
+      items: [
+        { label: "Тип", value: "Dynamic AMOLED 2X" },
+        { label: "Размер", value: "6.8 дюймов" },
+        { label: "Разрешение", value: "3088 x 1440" },
+        { label: "Частота", value: "1-120 Гц адаптивная" }
+      ]
+    },
+    {
+      category: "Производительность",
+      items: [
+        { label: "Процессор", value: "Snapdragon 8 Gen 2" },
+        { label: "ОЗУ", value: "8/12 ГБ LPDDR5X" },
+        { label: "Накопитель", value: "256/512 ГБ UFS 4.0" }
+      ]
+    },
+    {
+      category: "Камера",
+      items: [
+        { label: "Основная", value: "200 МП, f/1.7" },
+        { label: "Ультраширокая", value: "12 МП, f/2.2" },
+        { label: "Телефото", value: "10 МП, 3x/10x зум" }
+      ]
+    }
+  ]
+};
+
+const watchData = {
+  title: "NoName Watch 5 Pro",
+  subtitle: "Инновационные часы для активной жизни",
+  mainImageUrl: "/mobile/watch_hero.png",
+  features: [
+    {
+      title: "Мониторинг здоровья",
+      description: "Непрерывное отслеживание пульса, качества сна и уровня стресса с расширенными алгоритмами анализа данных."
+    },
+    {
+      title: "Защита от воды",
+      description: "Водонепроницаемость 5ATM и защита IP68 позволяют использовать часы при плавании и занятиях водными видами спорта."
+    },
+    {
+      title: "Батарея",
+      description: "До 50 часов работы без подзарядки благодаря оптимизированному энергопотреблению и емкому аккумулятору."
+    }
+  ],
+  specs: [
+    {
+      category: "Дисплей",
+      items: [
+        { label: "Тип", value: "Super AMOLED" },
+        { label: "Разрешение", value: "450 x 450 пикселей" },
+        { label: "Размер", value: "1.4 дюйма" }
+      ]
+    },
+    {
+      category: "Процессор",
+      items: [
+        { label: "Чип", value: "Exynos W930" },
+        { label: "Ядра", value: "Dual Core 1.18GHz" },
+        { label: "ОЗУ", value: "1.5GB" }
+      ]
+    },
+    {
+      category: "Батарея",
+      items: [
+        { label: "Емкость", value: "590 мАч" },
+        { label: "Время работы", value: "До 50 часов" },
+        { label: "Зарядка", value: "Беспроводная" }
+      ]
+    }
+  ]
+};
+
+const tabletData = {
+  title: "NoName Tab S8 Ultra",
+  subtitle: "Инновационный планшет для творчества и продуктивности",
+  mainImageUrl: "/mobile/tablet_hero.png",
+  features: [
+    {
+      title: "Большой экран",
+      description: "14.6-дюймовый Super AMOLED дисплей с частотой 120 Гц для максимального удобства работы и развлечений."
+    },
+    {
+      title: "Производительность",
+      description: "Snapdragon 8 Gen 1 для максимальной мощности и плавной работы любых приложений и игр."
+    },
+    {
+      title: "Батарея",
+      description: "11200 мАч для длительной работы без подзарядки даже при интенсивном использовании."
+    }
+  ],
+  specs: [
+    {
+      category: "Дисплей",
+      items: [
+        { label: "Тип", value: "Super AMOLED" },
+        { label: "Размер", value: "14.6 дюймов" },
+        { label: "Разрешение", value: "2960 x 1848" },
+        { label: "Частота", value: "120 Гц" }
+      ]
+    },
+    {
+      category: "Процессор и память",
+      items: [
+        { label: "Процессор", value: "Snapdragon 8 Gen 1" },
+        { label: "ОЗУ", value: "8/12/16 ГБ" },
+        { label: "Память", value: "128/256/512 ГБ" }
+      ]
+    },
+    {
+      category: "Батарея",
+      items: [
+        { label: "Емкость", value: "11200 мАч" },
+        { label: "Быстрая зарядка", value: "45 Вт" },
+        { label: "Время работы", value: "До 14 часов" }
+      ]
+    }
+  ]
+};
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -29,217 +167,141 @@ function App() {
   const contentRef = useRef<HTMLDivElement>(null);
   const { isMobile, isTablet, isSamsungBrowser, isYandexBrowser } = useDeviceDetect();
   
-  // Создаем ссылку на таймер
-  const forceLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Определяем, нужно ли использовать упрощенный рендеринг
+  const useSimplifiedRendering = isSamsungBrowser || isYandexBrowser;
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Метод для установки CSS свойства с учетом совместимости
-  const setOpacityStyle = (element: HTMLElement | null, value: number) => {
-    if (!element) return;
-    element.style.opacity = value.toString();
-    element.style.visibility = value === 0 ? 'hidden' : 'visible';
-  };
-
-  // Функция для принудительного завершения загрузки
-  const forceCompleteLoading = () => {
-    console.log('Force completing loading...');
-    
-    // Очищаем таймаут если он существует
-    if (forceLoadTimeoutRef.current) {
-      clearTimeout(forceLoadTimeoutRef.current);
-      forceLoadTimeoutRef.current = null;
-    }
-    
-    // Максимально упрощенное завершение загрузки без анимаций
-    setProgress(100);
-    
-    // Проверяем, существуют ли DOM элементы
-    if (loaderRef.current && contentRef.current) {
-      try {
-        // Прямое изменение стилей через DOM API для максимальной надежности
-        setOpacityStyle(loaderRef.current, 0);
-        setOpacityStyle(contentRef.current, 1);
-        
-        // Устанавливаем display:none для лоадера после короткой задержки
-        setTimeout(() => {
-          if (loaderRef.current) {
-            loaderRef.current.style.display = 'none';
-          }
-          setLoading(false);
-        }, 100);
-      } catch (error) {
-        console.error('Error during force load completion:', error);
-        // В случае ошибки просто устанавливаем состояние
-        setLoading(false);
-      }
-    } else {
-      // Если DOM элементы не найдены, просто меняем состояние
-      setLoading(false);
-    }
-  };
-
-  // Эффект для начальной загрузки
+  // Эффект для установки максимального времени загрузки
   useEffect(() => {
-    // Предустанавливаем opacity для контента
-    if (contentRef.current) {
-      setOpacityStyle(contentRef.current, 0);
-    }
-    
-    // Устанавливаем forced timeout, который гарантированно завершит загрузку
-    forceLoadTimeoutRef.current = setTimeout(forceCompleteLoading, MAX_LOADING_TIME);
-    
-    // Быстрая загрузка для Samsung Browser
-    if (isSamsungBrowser || isYandexBrowser) {
-      console.log('Using fast loading for Samsung/Yandex browser');
-      // Показываем минимальный прогресс
-      setProgress(30); 
-      
-      // Программируем псевдо-прогресс загрузки
-      const incrementInterval = setInterval(() => {
-        setProgress(prev => {
-          const newProgress = prev + 5;
-          if (newProgress >= 100) {
-            clearInterval(incrementInterval);
-            setTimeout(forceCompleteLoading, 300);
-            return 100;
-          }
-          return newProgress;
-        });
-      }, 150);
-      
-      // Очистка интервала при размонтировании
-      return () => {
-        clearInterval(incrementInterval);
-        if (forceLoadTimeoutRef.current) {
-          clearTimeout(forceLoadTimeoutRef.current);
+    // Максимальное время загрузки - 5 секунд
+    loadingTimeoutRef.current = setTimeout(() => {
+      if (loading) {
+        console.log('Loading timeout reached');
+        setProgress(100);
+        setTimeout(() => setLoading(false), 200);
+      }
+    }, 5000);
+
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, [loading]);
+
+  // Эффект для имитации загрузки
+  useEffect(() => {
+    // Для проблемных браузеров ускоряем загрузку
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setTimeout(() => setLoading(false), 200);
+          return 100;
         }
-      };
-    } else {
-      // Стандартный механизм загрузки для нормальных браузеров
-      // Имитируем прогресс загрузки
-      const increment = 5;
-      const interval = setInterval(() => {
-        setProgress(prev => {
-          const newVal = prev + increment;
-          if (newVal >= 90) {
-            clearInterval(interval);
-            
-            // Завершаем загрузку через секунду
-            setTimeout(() => {
-              setProgress(100);
-              setTimeout(forceCompleteLoading, 300);
-            }, 1000);
-            
-            return 90;
-          }
-          return newVal;
-        });
-      }, 200);
-      
-      return () => {
-        clearInterval(interval);
-        if (forceLoadTimeoutRef.current) {
-          clearTimeout(forceLoadTimeoutRef.current);
-        }
-      };
-    }
-  }, [isSamsungBrowser, isYandexBrowser]);
+        // Быстрее увеличиваем прогресс для проблемных браузеров
+        return prev + (useSimplifiedRendering ? 10 : 5);
+      });
+    }, 150);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [useSimplifiedRendering]);
 
   // Эффект для прокрутки страницы наверх при смене устройства
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentDevice]);
 
-  // Выбираем контент в зависимости от типа устройства и браузера
-  const MainContent = () => {
-    // Для Samsung Browser или Yandex Browser всегда используем только MobileDeviceDisplay
-    if (isSamsungBrowser || isYandexBrowser) {
-      if (currentDevice === 'phone') {
-        return (
-          <>
-            <MobileDeviceDisplay 
+  // Рендеринг соответствующего контента в зависимости от типа устройства и браузера
+  const renderDeviceContent = () => {
+    // Для Samsung Browser и Yandex Browser используем упрощенный рендеринг
+    if (useSimplifiedRendering) {
+      switch (currentDevice) {
+        case 'phone':
+          return (
+            <BrowserCompatibleFallback 
               deviceType="phone"
-              variant="hero"
-              imageUrl="/mobile/phone_hero_black.png"
+              {...phoneData}
             />
-            <TechSpecs />
-            <MobileDeviceDisplay 
-              deviceType="phone"
-              variant="rotate"
-              imageUrl="/mobile/phone_rotate_black.png"
-            />
-          </>
-        );
-      } else if (currentDevice === 'watch') {
-        return (
-          <>
-            <MobileDeviceDisplay 
+          );
+        case 'watch':
+          return (
+            <BrowserCompatibleFallback 
               deviceType="watch"
-              variant="hero"
-              imageUrl="/mobile/watch_hero.png"
+              {...watchData}
             />
-            <TechSpecs />
-          </>
-        );
-      } else {
-        return (
-          <>
-            <MobileDeviceDisplay 
+          );
+        case 'tablet':
+          return (
+            <BrowserCompatibleFallback 
               deviceType="tablet"
-              variant="hero"
-              imageUrl="/mobile/tablet_hero.png"
+              {...tabletData}
             />
-            <TechSpecs />
-          </>
-        );
+          );
+        default:
+          return <div>Неизвестное устройство</div>;
       }
     }
-    
-    // Стандартный контент для других браузеров
-    if (currentDevice === 'phone') {
-      return (
-        <>
+
+    // Стандартный контент для современных браузеров
+    switch (currentDevice) {
+      case 'phone':
+        return (
+          <>
+            <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+              <Scene />
+            </Suspense>
+            <TechSpecs />
+            <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+              <RotatingPhone />
+            </Suspense>
+          </>
+        );
+      case 'watch':
+        return (
           <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
-            <Scene />
+            <WatchScene />
           </Suspense>
-          <TechSpecs />
+        );
+      case 'tablet':
+        return (
           <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
-            <RotatingPhone />
+            <TabletScene />
           </Suspense>
-        </>
-      );
-    } else if (currentDevice === 'watch') {
-      return (
-        <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
-          <WatchScene />
-        </Suspense>
-      );
-    } else {
-      return (
-        <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
-          <TabletScene />
-        </Suspense>
-      );
+        );
+      default:
+        return <div>Неизвестное устройство</div>;
     }
   };
 
   return (
     <BrowserRouter>
-      <div className={`finlandica-text ${isMobile ? 'mobile-view' : ''} ${isTablet ? 'tablet-view' : ''} ${isSamsungBrowser ? 'samsung-browser' : ''} ${isYandexBrowser ? 'yandex-browser' : ''}`}>
+      <div className={`
+        finlandica-text 
+        ${isMobile ? 'mobile-view' : ''} 
+        ${isTablet ? 'tablet-view' : ''} 
+        ${isSamsungBrowser ? 'samsung-browser' : ''} 
+        ${isYandexBrowser ? 'yandex-browser' : ''} 
+        ${useSimplifiedRendering ? 'simplified-rendering' : ''}
+      `}>
         <div className="app">
-          <div 
-            ref={loaderRef} 
-            style={{ 
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: 1000,
-              display: loading ? 'block' : 'none'
-            }}
-          >
-            <Loader progress={progress} />
-          </div>
+          {loading && (
+            <div 
+              ref={loaderRef} 
+              style={{ 
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 1000
+              }}
+            >
+              <Loader progress={progress} />
+            </div>
+          )}
           
           <div ref={contentRef} style={{ opacity: loading ? 0 : 1 }}>
             <Header
@@ -250,66 +312,10 @@ function App() {
             <Routes>
               <Route path="/store/*" element={<Store />} />
               <Route path="/product/:productId" element={<ProductDetail />} />
-              <Route path="/" element={<MainContent />} />
-              <Route path="/phone" element={
-                isSamsungBrowser || isYandexBrowser ? (
-                  <>
-                    <MobileDeviceDisplay 
-                      deviceType="phone"
-                      variant="hero"
-                      imageUrl="/mobile/phone_hero_black.png"
-                    />
-                    <TechSpecs />
-                    <MobileDeviceDisplay 
-                      deviceType="phone"
-                      variant="rotate"
-                      imageUrl="/mobile/phone_rotate_black.png"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
-                      <Scene />
-                    </Suspense>
-                    <TechSpecs />
-                    <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
-                      <RotatingPhone />
-                    </Suspense>
-                  </>
-                )
-              } />
-              <Route path="/watch" element={
-                isSamsungBrowser || isYandexBrowser ? (
-                  <>
-                    <MobileDeviceDisplay 
-                      deviceType="watch"
-                      variant="hero"
-                      imageUrl="/mobile/watch_hero.png"
-                    />
-                    <TechSpecs />
-                  </>
-                ) : (
-                  <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
-                    <WatchScene />
-                  </Suspense>
-                )
-              } />
-              <Route path="/tablet" element={
-                isSamsungBrowser || isYandexBrowser ? (
-                  <>
-                    <MobileDeviceDisplay 
-                      deviceType="tablet"
-                      variant="hero"
-                      imageUrl="/mobile/tablet_hero.png"
-                    />
-                    <TechSpecs />
-                  </>
-                ) : (
-                  <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
-                    <TabletScene />
-                  </Suspense>
-                )
-              } />
+              <Route path="/" element={renderDeviceContent()} />
+              <Route path="/phone" element={renderDeviceContent()} />
+              <Route path="/watch" element={renderDeviceContent()} />
+              <Route path="/tablet" element={renderDeviceContent()} />
             </Routes>
           </div>
         </div>

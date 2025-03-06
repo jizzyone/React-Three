@@ -1,0 +1,192 @@
+/* Стили для компонента-заглушки для проблемных браузеров */
+.browser-compatible-fallback {
+    width: 100%;
+    min-height: 100vh;
+    color: white;
+    font-family: inherit;
+  }
+  
+  /* Секция героя */
+  .fallback-hero {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 20px 30px;
+  }
+  
+  .fallback-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+  }
+  
+  .fallback-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    max-width: 600px;
+  }
+  
+  .fallback-image-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .fallback-glow-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(
+      circle at center,
+      rgba(103, 178, 255, 0.3) 0%,
+      rgba(255, 103, 231, 0.1) 40%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    filter: blur(40px);
+    z-index: 1;
+  }
+  
+  .fallback-image-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 1rem;
+    z-index: 2;
+  }
+  
+  .fallback-main-image {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    position: relative;
+    z-index: 3;
+    transition: opacity 0.5s ease;
+  }
+  
+  /* Секция характеристик */
+  .fallback-features {
+    padding: 4rem 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .fallback-features h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .fallback-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .fallback-feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .fallback-feature-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .fallback-feature-card p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  /* Секция технических характеристик */
+  .fallback-specs {
+    padding: 4rem 20px;
+  }
+  
+  .fallback-specs h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .fallback-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .fallback-spec-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .fallback-spec-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .fallback-spec-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  
+  .fallback-spec-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.5rem;
+  }
+  
+  .fallback-spec-item:last-child {
+    border-bottom: none;
+  }
+  
+  .fallback-spec-label {
+    opacity: 0.7;
+  }
+  
+  .fallback-spec-value {
+    font-weight: 500;
+  }
+  
+  /* Адаптация для мобильных устройств */
+  @media (max-width: 768px) {
+    .fallback-title {
+      font-size: 2rem;
+    }
+    
+    .fallback-image-container {
+      height: 300px;
+    }
+    
+    .fallback-features h2,
+    .fallback-specs h2 {
+      font-size: 1.7rem;
+      margin-bottom: 2rem;
+    }
+  }
