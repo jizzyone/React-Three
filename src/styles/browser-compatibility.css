@@ -1,4 +1,6 @@
 /* Стили для улучшения совместимости с разными браузерами */
+/* Этот файл импортируется в App.tsx */
+
 /* Глобальные исправления для проблемных браузеров */
 .samsung-browser {
     /* Отключаем сложные анимации для Samsung Browser */
@@ -20,22 +22,29 @@
     --backdrop-filter-enabled: none;
   }
   
-  .no-webgl-support {
-    /* Отключаем все связанные с WebGL элементы */
-    --disable-3d-effects: 1;
-  }
-  
   /* Применение переменных к конкретным компонентам */
   .samsung-browser .loader-container,
   .yandex-browser .loader-container {
-    background: #1a1a2e;
+    background: #1a1a2e !important;
   }
   
   .samsung-browser .loader-logo,
   .yandex-browser .loader-logo {
     /* Избегаем использования gradient для текста, что может вызывать проблемы */
-    background: transparent;
-    color: white;
+    background: transparent !important;
+    color: white !important;
+  }
+  
+  /* Простая анимация пульсации для Samsung Browser */
+  @keyframes pulsate {
+    from {
+      transform: scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
   }
   
   /* Фиксы для анимаций и трансформаций */
@@ -61,36 +70,53 @@
   /* Исправление для анимации загрузки */
   .samsung-browser .loader-progress-bar,
   .yandex-browser .loader-progress-bar {
-    transition: width 0.4s linear !important;
+    transition: width 0.2s linear !important;
   }
   
-  /* Исправление для прокрутки на мобильных устройствах */
-  body.mobile-device,
-  body.tablet-device {
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
+  /* Плейсхолдер для загрузки компонентов */
+  .loading-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(26, 26, 46, 0.8);
   }
   
-  /* Специальные стили для отключения GSAP анимаций, если они вызывают проблемы */
-  .samsung-browser .gsap-animated {
-    transition: none !important;
+  /* Специфические стили для Samsung Browser - принудительно убираем любые сложные эффекты */
+  .samsung-browser {
+    /* Убираем все анимации и трансформации */
     animation: none !important;
+    transition: none !important;
+  }
+  
+  .samsung-browser * {
+    /* Отключаем ВСЕ сложные CSS свойства */
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+    animation: none !important;
+    transition: none !important;
     transform: none !important;
+    filter: none !important;
   }
   
-  /* Гарантируем, что контент видим даже при проблемах с загрузкой */
-  .samsung-browser .app > div:last-child,
-  .yandex-browser .app > div:last-child {
+  /* Важные стили для восстановления функциональности внутри Samsung Browser */
+  .samsung-browser .loader-progress-bar {
+    transition: width 0.2s linear !important;
+  }
+  
+  /* Принудительный стиль для контента в Samsung Browser */
+  .samsung-browser .app > div:nth-child(2) {
     opacity: 1 !important;
+    visibility: visible !important;
   }
   
-  /* Обеспечиваем корректное отображение placeholder изображений */
-  .device-placeholder {
-    background: #2a2a40 !important; /* Статический цвет фона вместо градиента */
-  }
-  
-  /* Исправляем проблемы с отображением текста на MobileDeviceDisplay */
-  .device-placeholder-text {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    font-weight: bold;
+  /* Принудительно скрываем лоадер когда контент должен быть показан */
+  body.samsung-browser.loading-done .loader-container {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
   }

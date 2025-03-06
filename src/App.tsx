@@ -1,236 +1,158 @@
-import React, { useState, useEffect, useRef, useLayoutEffect, Suspense } from 'react';
-import { BrowserRouter, Routes, Route} from 'react-router-dom';
-import gsap from 'gsap';
-import Scene from './Components/Scene';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './Components/Header';
 import TechSpecs from './Components/TechSpecs';
 import Loader from './Components/Loader';
-import RotatingPhone from './Components/RotatingPhone';
-import WatchScene from './Components/WatchScene';
-import TabletScene from './Components/TabletScene';
 import Store from './Components/Store';
 import ProductDetail from './Components/ProductDetail';
 import './App.css';
 import './styles/MobileResponsive.css';
-import './styles/browser-compatibility.css';
 import './styles/MobileMenu.css';
+import './styles/browser-compatibility.css';
 import { useDeviceDetect } from './hooks/useDeviceDetect';
 import MobileDeviceDisplay from './Components/MobileDeviceDisplay';
-// Импортируем и адаптируем функцию для предзагрузки окружений
-import { preloadEnvironments } from './utils/environment-preload';
 
-// Создаём массив путей для предзагрузки изображений-заглушек
-const fallbackImagePaths = [
-  '/fallbacks/phone_hero.png',
-  '/fallbacks/phone_detail.png',
-  '/fallbacks/phone_rotate.png',
-  '/fallbacks/watch_hero.png',
-  '/fallbacks/watch_detail.png',
-  '/fallbacks/watch_rotate.png',
-  '/fallbacks/tablet_hero.png',
-  '/fallbacks/tablet_detail.png',
-  '/fallbacks/tablet_rotate.png'
-];
+// Лениво загружаем тяжелые компоненты чтобы ускорить первоначальную загрузку
+const Scene = React.lazy(() => import('./Components/Scene'));
+const RotatingPhone = React.lazy(() => import('./Components/RotatingPhone'));
+const WatchScene = React.lazy(() => import('./Components/WatchScene'));
+const TabletScene = React.lazy(() => import('./Components/TabletScene'));
 
-// Мобильные изображения для всех устройств
-const mobileImagePaths = [
-  '/mobile/phone_hero_black.png',
-  '/mobile/watch_hero.png',
-  '/mobile/tablet_hero.png',
-  '/mobile/phone_detail_black.png'
-];
+// Объявляем максимальное время загрузки
+const MAX_LOADING_TIME = 5000; // 5 секунд максимум
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [currentDevice, setCurrentDevice] = useState<'phone' | 'watch' | 'tablet'>('phone');
-  const loaderRef = useRef(null);
-  const contentRef = useRef(null);
-  const { isMobile, isTablet, isSamsungBrowser, supportsWebGL } = useDeviceDetect();
-  const loadingTimeoutRef = useRef<number | null>(null);
+  const loaderRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const { isMobile, isTablet, isSamsungBrowser, isYandexBrowser } = useDeviceDetect();
+  
+  // Создаем ссылку на таймер
+  const forceLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useLayoutEffect(() => {
+  // Метод для установки CSS свойства с учетом совместимости
+  const setOpacityStyle = (element: HTMLElement | null, value: number) => {
+    if (!element) return;
+    element.style.opacity = value.toString();
+    element.style.visibility = value === 0 ? 'hidden' : 'visible';
+  };
+
+  // Функция для принудительного завершения загрузки
+  const forceCompleteLoading = () => {
+    console.log('Force completing loading...');
+    
+    // Очищаем таймаут если он существует
+    if (forceLoadTimeoutRef.current) {
+      clearTimeout(forceLoadTimeoutRef.current);
+      forceLoadTimeoutRef.current = null;
+    }
+    
+    // Максимально упрощенное завершение загрузки без анимаций
+    setProgress(100);
+    
+    // Проверяем, существуют ли DOM элементы
+    if (loaderRef.current && contentRef.current) {
+      try {
+        // Прямое изменение стилей через DOM API для максимальной надежности
+        setOpacityStyle(loaderRef.current, 0);
+        setOpacityStyle(contentRef.current, 1);
+        
+        // Устанавливаем display:none для лоадера после короткой задержки
+        setTimeout(() => {
+          if (loaderRef.current) {
+            loaderRef.current.style.display = 'none';
+          }
+          setLoading(false);
+        }, 100);
+      } catch (error) {
+        console.error('Error during force load completion:', error);
+        // В случае ошибки просто устанавливаем состояние
+        setLoading(false);
+      }
+    } else {
+      // Если DOM элементы не найдены, просто меняем состояние
+      setLoading(false);
+    }
+  };
+
+  // Эффект для начальной загрузки
+  useEffect(() => {
+    // Предустанавливаем opacity для контента
+    if (contentRef.current) {
+      setOpacityStyle(contentRef.current, 0);
+    }
+    
+    // Устанавливаем forced timeout, который гарантированно завершит загрузку
+    forceLoadTimeoutRef.current = setTimeout(forceCompleteLoading, MAX_LOADING_TIME);
+    
+    // Быстрая загрузка для Samsung Browser
+    if (isSamsungBrowser || isYandexBrowser) {
+      console.log('Using fast loading for Samsung/Yandex browser');
+      // Показываем минимальный прогресс
+      setProgress(30); 
+      
+      // Программируем псевдо-прогресс загрузки
+      const incrementInterval = setInterval(() => {
+        setProgress(prev => {
+          const newProgress = prev + 5;
+          if (newProgress >= 100) {
+            clearInterval(incrementInterval);
+            setTimeout(forceCompleteLoading, 300);
+            return 100;
+          }
+          return newProgress;
+        });
+      }, 150);
+      
+      // Очистка интервала при размонтировании
+      return () => {
+        clearInterval(incrementInterval);
+        if (forceLoadTimeoutRef.current) {
+          clearTimeout(forceLoadTimeoutRef.current);
+        }
+      };
+    } else {
+      // Стандартный механизм загрузки для нормальных браузеров
+      // Имитируем прогресс загрузки
+      const increment = 5;
+      const interval = setInterval(() => {
+        setProgress(prev => {
+          const newVal = prev + increment;
+          if (newVal >= 90) {
+            clearInterval(interval);
+            
+            // Завершаем загрузку через секунду
+            setTimeout(() => {
+              setProgress(100);
+              setTimeout(forceCompleteLoading, 300);
+            }, 1000);
+            
+            return 90;
+          }
+          return newVal;
+        });
+      }, 200);
+      
+      return () => {
+        clearInterval(interval);
+        if (forceLoadTimeoutRef.current) {
+          clearTimeout(forceLoadTimeoutRef.current);
+        }
+      };
+    }
+  }, [isSamsungBrowser, isYandexBrowser]);
+
+  // Эффект для прокрутки страницы наверх при смене устройства
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [currentDevice]);
 
-  useEffect(() => {
-    gsap.set(contentRef.current, { opacity: 0 });
-
-    // Принудительно завершаем загрузку через 10 секунд
-    loadingTimeoutRef.current = window.setTimeout(() => {
-      if (loading) {
-        console.log('Loading timeout reached, forcing completion');
-        completeLoading();
-      }
-    }, 10000); // 10 секунд максимум на загрузку
-
-    return () => {
-      if (loadingTimeoutRef.current) {
-        clearTimeout(loadingTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  // Выносим completeLoading в отдельную функцию, чтобы использовать её и в таймауте и при обычной загрузке
-  const completeLoading = () => {
-    // Очищаем таймаут, если загрузка завершилась нормально
-    if (loadingTimeoutRef.current) {
-      clearTimeout(loadingTimeoutRef.current);
-      loadingTimeoutRef.current = null;
-    }
-
-    const tl = gsap.timeline({
-      onComplete: () => setLoading(false)
-    });
-
-    tl.to(loaderRef.current, {
-      opacity: 0,
-      duration: 0.5,
-      ease: 'power2.inOut'
-    })
-    .to(contentRef.current, {
-      opacity: 1,
-      duration: 0.8,
-      ease: 'power2.out'
-    }, '-=0.3');
-  };
-
-  useEffect(() => {
-    const preloadAssets = async () => {
-      try {
-        // Используем разные стратегии загрузки в зависимости от браузера
-        if (isSamsungBrowser) {
-          // Для Samsung Browser упрощаем процесс загрузки
-          // Загружаем только самые необходимые изображения
-          preloadMinimalAssets();
-        } else {
-          // Для остальных браузеров используем полную загрузку
-          preloadFullAssets();
-        }
-      } catch (error) {
-        console.error('Error preloading assets:', error);
-        // Даже в случае ошибки, завершаем загрузку
-        completeLoading();
-      }
-    };
-
-    // Упрощенная загрузка активов для проблемных браузеров
-    const preloadMinimalAssets = () => {
-      // Загружаем только основные изображения для мобильной версии
-      const criticalImageUrl = isMobile || isTablet ? 
-        '/mobile/phone_hero_black.png' : 
-        fallbackImagePaths[0];
-      
-      const img = new Image();
-      img.onload = () => {
-        // Устанавливаем промежуточный прогресс, чтобы пользователь видел движение
-        setProgress(50);
-        
-        // Небольшая задержка для плавности
-        setTimeout(() => {
-          setProgress(100);
-          setTimeout(completeLoading, 300);
-        }, 500);
-      };
-      
-      img.onerror = () => {
-        // Даже если изображение не загрузилось, продолжаем
-        console.warn('Failed to load critical image, continuing anyway');
-        setProgress(100);
-        setTimeout(completeLoading, 300);
-      };
-      
-      img.src = criticalImageUrl;
-    };
-
-    // Полная загрузка активов для нормальных браузеров
-    const preloadFullAssets = async () => {
-      // Общие изображения для предзагрузки (фоны и заглушки)
-      let imageUrls = [...fallbackImagePaths];
-
-      // Добавляем мобильные изображения для мобильных устройств
-      if (isMobile || isTablet) {
-        imageUrls = [...imageUrls, ...mobileImagePaths];
-      } else {
-        // Для десктопа загружаем дополнительные изображения
-        imageUrls = [
-          ...imageUrls,
-          'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-kv.jpg',
-          'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-camera.jpg',
-          'https://images.samsung.com/levant/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-highlights-spen.jpg'
-        ];
-        
-        // Предзагружаем HDR-окружения только для десктопа с поддержкой WebGL
-        if (supportsWebGL) {
-          try {
-            await preloadEnvironments();
-          } catch (error) {
-            console.warn('Failed to preload environments:', error);
-          }
-        }
-      }
-      
-      // Устанавливаем минимальный прогресс, чтобы пользователь видел, что что-то происходит
-      setProgress(10);
-      
-      let loadedImages = 0;
-      const totalImages = imageUrls.length;
-      
-      // Минимальный порог для завершения загрузки (70% изображений)
-      const minThreshold = Math.floor(totalImages * 0.7);
-
-      const updateProgress = () => {
-        loadedImages++;
-        const percentage = Math.min(90, (loadedImages / totalImages) * 100);
-        setProgress(percentage);
-        
-        // Если загрузили минимальный порог или все изображения, завершаем загрузку
-        if (loadedImages >= minThreshold || loadedImages === totalImages) {
-          setProgress(100);
-          setTimeout(completeLoading, 300);
-        }
-      };
-
-      if (totalImages === 0) {
-        setProgress(100);
-        setTimeout(completeLoading, 300);
-        return;
-      }
-
-      // Устанавливаем максимальный таймаут для каждого изображения
-      const loadImageWithTimeout = (url: string) => {
-        return new Promise<void>((resolve) => {
-          const img = new Image();
-          
-          // Таймаут для загрузки отдельного изображения (3 секунды)
-          const timeout = setTimeout(() => {
-            console.warn(`Image loading timeout for: ${url}`);
-            resolve();
-          }, 3000);
-          
-          img.onload = img.onerror = () => {
-            clearTimeout(timeout);
-            resolve();
-          };
-          
-          img.src = url;
-        });
-      };
-
-      // Загружаем все изображения с таймаутом и обновляем прогресс
-      for (const url of imageUrls) {
-        await loadImageWithTimeout(url);
-        updateProgress();
-      }
-    };
-
-    preloadAssets();
-  }, [isMobile, isTablet, isSamsungBrowser, supportsWebGL]);
-
-  // Генерируем контент в зависимости от типа устройства и браузера
+  // Выбираем контент в зависимости от типа устройства и браузера
   const MainContent = () => {
-    // Для Samsung Internet браузера или устройств без поддержки WebGL используем альтернативный контент без 3D-моделей
-    if (isSamsungBrowser || !supportsWebGL) {
+    // Для Samsung Browser или Yandex Browser всегда используем только MobileDeviceDisplay
+    if (isSamsungBrowser || isYandexBrowser) {
       if (currentDevice === 'phone') {
         return (
           <>
@@ -255,6 +177,7 @@ function App() {
               variant="hero"
               imageUrl="/mobile/watch_hero.png"
             />
+            <TechSpecs />
           </>
         );
       } else {
@@ -265,6 +188,7 @@ function App() {
               variant="hero"
               imageUrl="/mobile/tablet_hero.png"
             />
+            <TechSpecs />
           </>
         );
       }
@@ -274,46 +198,61 @@ function App() {
     if (currentDevice === 'phone') {
       return (
         <>
-          <Scene />
+          <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+            <Scene />
+          </Suspense>
           <TechSpecs />
-          <RotatingPhone />
+          <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+            <RotatingPhone />
+          </Suspense>
         </>
       );
     } else if (currentDevice === 'watch') {
-      return <WatchScene />;
+      return (
+        <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+          <WatchScene />
+        </Suspense>
+      );
     } else {
-      return <TabletScene />;
+      return (
+        <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+          <TabletScene />
+        </Suspense>
+      );
     }
   };
 
   return (
     <BrowserRouter>
-    <div className={`finlandica-text ${isMobile ? 'mobile-view' : ''} ${isTablet ? 'tablet-view' : ''} ${isSamsungBrowser ? 'samsung-browser' : ''} ${!supportsWebGL ? 'no-webgl' : ''}`}>
-      <div className="app">
-        <div ref={loaderRef} style={{ 
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 1000,
-          display: loading ? 'block' : 'none'
-        }}>
-          <Loader progress={progress} />
-        </div>
-        
-        <div ref={contentRef}>
-          <Header
-            currentDevice={currentDevice}
-            onDeviceChange={setCurrentDevice}
-          />
-          <Suspense fallback={<Loader progress={progress} />}>
+      <div className={`finlandica-text ${isMobile ? 'mobile-view' : ''} ${isTablet ? 'tablet-view' : ''} ${isSamsungBrowser ? 'samsung-browser' : ''} ${isYandexBrowser ? 'yandex-browser' : ''}`}>
+        <div className="app">
+          <div 
+            ref={loaderRef} 
+            style={{ 
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              zIndex: 1000,
+              display: loading ? 'block' : 'none'
+            }}
+          >
+            <Loader progress={progress} />
+          </div>
+          
+          <div ref={contentRef} style={{ opacity: loading ? 0 : 1 }}>
+            <Header
+              currentDevice={currentDevice}
+              onDeviceChange={setCurrentDevice}
+            />
+            
             <Routes>
               <Route path="/store/*" element={<Store />} />
               <Route path="/product/:productId" element={<ProductDetail />} />
               <Route path="/" element={<MainContent />} />
               <Route path="/phone" element={
-                isSamsungBrowser || !supportsWebGL ? (
+                isSamsungBrowser || isYandexBrowser ? (
                   <>
                     <MobileDeviceDisplay 
                       deviceType="phone"
@@ -329,39 +268,52 @@ function App() {
                   </>
                 ) : (
                   <>
-                    <Scene />
+                    <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+                      <Scene />
+                    </Suspense>
                     <TechSpecs />
-                    <RotatingPhone />
+                    <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+                      <RotatingPhone />
+                    </Suspense>
                   </>
                 )
               } />
               <Route path="/watch" element={
-                isSamsungBrowser || !supportsWebGL ? (
-                  <MobileDeviceDisplay 
-                    deviceType="watch"
-                    variant="hero"
-                    imageUrl="/mobile/watch_hero.png"
-                  />
+                isSamsungBrowser || isYandexBrowser ? (
+                  <>
+                    <MobileDeviceDisplay 
+                      deviceType="watch"
+                      variant="hero"
+                      imageUrl="/mobile/watch_hero.png"
+                    />
+                    <TechSpecs />
+                  </>
                 ) : (
-                  <WatchScene />
+                  <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+                    <WatchScene />
+                  </Suspense>
                 )
               } />
               <Route path="/tablet" element={
-                isSamsungBrowser || !supportsWebGL ? (
-                  <MobileDeviceDisplay 
-                    deviceType="tablet"
-                    variant="hero"
-                    imageUrl="/mobile/tablet_hero.png"
-                  />
+                isSamsungBrowser || isYandexBrowser ? (
+                  <>
+                    <MobileDeviceDisplay 
+                      deviceType="tablet"
+                      variant="hero"
+                      imageUrl="/mobile/tablet_hero.png"
+                    />
+                    <TechSpecs />
+                  </>
                 ) : (
-                  <TabletScene />
+                  <Suspense fallback={<div className="loading-placeholder">Загрузка...</div>}>
+                    <TabletScene />
+                  </Suspense>
                 )
               } />
             </Routes>
-          </Suspense>
+          </div>
         </div>
       </div>
-    </div>
     </BrowserRouter>
   );
 }
