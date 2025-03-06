@@ -1,6 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Добавьте этот скрипт в начало <head> в файле public/index.html -->
+<script>
+  (function() {
+    // Определяем Samsung Browser по User-Agent
+    function isSamsungBrowser() {
+      var ua = navigator.userAgent.toLowerCase();
+      return ua.indexOf('samsungbrowser') > -1 || (ua.indexOf('samsung') > -1 && ua.indexOf('chrome') > -1);
+    }
+  
+    // Определяем Yandex Browser по User-Agent
+    function isYandexBrowser() {
+      return navigator.userAgent.toLowerCase().indexOf('yabrowser') > -1;
+    }
+  
+    // Получаем текущий путь
+    var path = window.location.pathname;
+    
+    // Проверяем, является ли браузер Samsung или Yandex
+    if (isSamsungBrowser() || isYandexBrowser()) {
+      // Проверяем, находимся ли на странице часов, телефона или планшета
+      if (path === '/phone' || path === '/watch' || path === '/tablet') {
+        // Получаем имя страницы из пути
+        var pageName = path.substring(1); // Удаляем первый символ "/"
+        
+        // Перенаправляем на статическую HTML-страницу
+        window.location.href = '/static/' + pageName + '.html';
+      }
+    }
+  })();
+  </script>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

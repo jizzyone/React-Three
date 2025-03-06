@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoName Phone - Инновационные технологии</title>
+  <style>
+    /* Базовые стили */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #1a1a2e;
+      color: white;
+      line-height: 1.6;
+    }
+    
+    /* Хедер */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(26, 26, 46, 0.9);
+      padding: 15px 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    .logo-prefix {
+      color: white;
+    }
+    
+    .logo-brand {
+      background: linear-gradient(135deg, #67b2ff, #ff67e7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: #67b2ff;
+    }
+    
+    .nav {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .nav a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 15px;
+    }
+    
+    .cta-button {
+      background: linear-gradient(135deg, #67b2ff, #ff67e7);
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    /* Основной контент */
+    .content {
+      padding-top: 70px;
+    }
+    
+    /* Секция героя */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.8;
+    }
+    
+    .phone-image {
+      max-width: 80%;
+      height: auto;
+      margin: 2rem 0;
+    }
+    
+    /* Секция характеристик */
+    .features {
+      background-color: #16172d;
+      padding: 4rem 20px;
+    }
+    
+    .features-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .features h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .feature-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    .feature-card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+    
+    /* Секция технических характеристик */
+    .specs {
+      padding: 4rem 20px;
+    }
+    
+    .specs-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .specs h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .spec-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 2rem;
+    }
+    
+    .spec-card h3 {
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+    }
+    
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    
+    .spec-label {
+      opacity: 0.7;
+    }
+    
+    /* Мобильное меню */
+    .mobile-menu-button {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    /* Медиа-запросы для адаптивности */
+    @media (max-width: 768px) {
+      .nav {
+        display: none;
+      }
+      
+      .mobile-menu-button {
+        display: block;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .feature-grid, .specs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Хедер -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-prefix">no</span>
+        <span class="logo-brand">Name</span>
+      </div>
+      
+      <nav class="nav">
+        <a href="/static/phone.html">Телефон</a>
+        <a href="/static/watch.html">Часы</a>
+        <a href="/static/tablet.html">Планшет</a>
+        <a href="/store">Магазин</a>
+      </nav>
+      
+      <button class="mobile-menu-button">☰</button>
+    </div>
+  </header>
+  
+  <!-- Основной контент -->
+  <main class="content">
+    <!-- Секция героя -->
+    <section class="hero">
+      <h1>Новый noNamePhone Ultra</h1>
+      <p>Переосмысление технологий</p>
+      
+      <img src="/mobile/phone_hero_black.png" alt="NoName Phone" class="phone-image">
+      
+      <a href="/store" class="cta-button">Купить сейчас</a>
+    </section>
+    
+    <!-- Секция характеристик -->
+    <section class="features">
+      <div class="features-container">
+        <h2>Особенности</h2>
+        
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h3>Революционная камера</h3>
+            <p>200 МП основная камера с продвинутой системой ИИ для идеальных фото в любых условиях.</p>
+          </div>
+          
+          <div class="feature-card">
+            <h3>Мощный процессор</h3>
+            <p>Snapdragon 8 Gen 2 для исключительной производительности и энергоэффективности.</p>
+          </div>
+          
+          <div class="feature-card">
+            <h3>Впечатляющий дисплей</h3>
+            <p>6.8" Dynamic AMOLED 2X с частотой 120 Гц для плавной анимации и ярких цветов.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Секция технических характеристик -->
+    <section class="specs">
+      <div class="specs-container">
+        <h2>Технические характеристики</h2>
+        
+        <div class="specs-grid">
+          <div class="spec-card">
+            <h3>Дисплей</h3>
+            <div class="spec-item">
+              <span class="spec-label">Тип</span>
+              <span class="spec-value">Dynamic AMOLED 2X</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Размер</span>
+              <span class="spec-value">6.8 дюймов</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Разрешение</span>
+              <span class="spec-value">3088 x 1440 (500 ppi)</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Частота</span>
+              <span class="spec-value">1-120 Гц адаптивная</span>
+            </div>
+          </div>
+          
+          <div class="spec-card">
+            <h3>Производительность</h3>
+            <div class="spec-item">
+              <span class="spec-label">Процессор</span>
+              <span class="spec-value">Snapdragon 8 Gen 2</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">ОЗУ</span>
+              <span class="spec-value">8/12 ГБ LPDDR5X</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Накопитель</span>
+              <span class="spec-value">256/512 ГБ UFS 4.0</span>
+            </div>
+          </div>
+          
+          <div class="spec-card">
+            <h3>Камера</h3>
+            <div class="spec-item">
+              <span class="spec-label">Основная</span>
+              <span class="spec-value">200 МП, f/1.7</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Ультраширокая</span>
+              <span class="spec-value">12 МП, f/2.2</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Телефото</span>
+              <span class="spec-value">10 МП, 3x/10x зум</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <!-- Простой скрипт для мобильного меню -->
+  <script>
+    // Для простоты на статической странице мобильное меню будет делать редирект
+    document.querySelector('.mobile-menu-button').addEventListener('click', function() {
+      alert('Перейдите на полную версию сайта для доступа к меню');
+    });
+  </script>
+</body>
+</html>
