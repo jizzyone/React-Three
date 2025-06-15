@@ -19,6 +19,7 @@ interface DeviceConfigsType {
   model2Pro2: DeviceConfigType;
   model3: DeviceConfigType;
   tablet: DeviceConfigType;
+  watch: DeviceConfigType;
 }
 
 const ColoredProductModel: React.FC<ColoredProductModelProps> = ({ modelPath, color }) => {
@@ -28,7 +29,7 @@ const ColoredProductModel: React.FC<ColoredProductModelProps> = ({ modelPath, co
   useEffect(() => {
     if (!scene) return;
 
-    // Вывод для отладки
+    // Debug output
     console.log('All meshes:');
     scene.traverse((child) => {
       if (child instanceof THREE.Mesh) {
@@ -37,46 +38,51 @@ const ColoredProductModel: React.FC<ColoredProductModelProps> = ({ modelPath, co
       }
     });
 
-    // Создаем новый материал
-    const newMaterial = new THREE.MeshStandardMaterial({
+    // New base material
+    const baseMaterial = new THREE.MeshStandardMaterial({
       color: new THREE.Color(color),
       metalness: 0.4,
       roughness: 0.2,
     });
 
-    // Определяем конфигурацию для разных моделей телефонов
+    // Configuration for devices
     const deviceConfig: DeviceConfigsType = {
       model1: {
         meshNames: ['Object_17', 'Object_27', 'Object_3', 'Object_4', 'Object_5', 'Object_6', 'Object_8', 'Object_20', 'Object_21'],
-        shouldUseIncludes: false
+        shouldUseIncludes: false,
       },
       model2: {
         meshNames: ['Back__Back_0', 'Out_Metal_Metal_Out_0', 'Out_Metal_Material_#101_0'],
-        shouldUseIncludes: false
+        shouldUseIncludes: false,
       },
       model2Pro: {
         meshNames: ['Back_Back_0', 'S21ULTRA_BodyFrame_0', 'Logo_BodyFrame_0'],
-        shouldUseIncludes: false
+        shouldUseIncludes: false,
       },
-      model2Pro2: { // Новая модель samsung_pro_store2.glb
+      model2Pro2: {
         meshNames: ['Object_52', 'Object_6', 'Object_16', 'Object_26'],
-        shouldUseIncludes: false
+        shouldUseIncludes: false,
       },
       model3: {
         meshNames: ['Back_Back_0', 'S21ULTRA_BodyFrame_0', 'Logo_BodyFrame_0'],
-        shouldUseIncludes: false
+        shouldUseIncludes: false,
       },
       tablet: {
         meshNames: ['Body_Body', 'PenBody'],
-        shouldUseIncludes: true
-      }
+        shouldUseIncludes: true,
+      },
+      // New watch config: color only strap meshes
+      watch: {
+        meshNames: ['silicon', 'strap', 'band'],
+        shouldUseIncludes: true,
+      },
     };
 
-    // Определяем тип модели
-    const isTablet = modelPath.includes('tab');
+    // Select config based on modelPath
     let config: DeviceConfigType;
-
-    if (isTablet) {
+    if (modelPath.includes('watch')) {
+      config = deviceConfig.watch;
+    } else if (modelPath.includes('tab')) {
       config = deviceConfig.tablet;
     } else if (modelPath.includes('samsung_pro_store2')) {
       config = deviceConfig.model2Pro2;
@@ -90,45 +96,53 @@ const ColoredProductModel: React.FC<ColoredProductModelProps> = ({ modelPath, co
       config = deviceConfig.model1;
     }
 
+    // Apply coloring according to config
     scene.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         const shouldColor = config.shouldUseIncludes
-          ? config.meshNames.some(name => child.name.includes(name))
+          ? config.meshNames.some(name => child.name.toLowerCase().includes(name.toLowerCase()))
           : config.meshNames.includes(child.name);
 
         if (shouldColor) {
           console.log('Applying color to:', child.name);
-          
-          const currentMaterial = child.material as THREE.MeshStandardMaterial;
-          const meshMaterial = newMaterial.clone();
 
-          // Копируем свойства материала
-          if (currentMaterial.map) meshMaterial.map = currentMaterial.map;
-          if (currentMaterial.normalMap) meshMaterial.normalMap = currentMaterial.normalMap;
-          if (currentMaterial.roughnessMap) meshMaterial.roughnessMap = currentMaterial.roughnessMap;
-          if (currentMaterial.metalnessMap) meshMaterial.metalnessMap = currentMaterial.metalnessMap;
-          if (currentMaterial.envMap) meshMaterial.envMap = currentMaterial.envMap;
+          const currentMat = child.material as THREE.MeshStandardMaterial;
+          const mat = baseMaterial.clone();
 
-          meshMaterial.envMapIntensity = currentMaterial.envMapIntensity || 1;
-          meshMaterial.transparent = currentMaterial.transparent;
-          meshMaterial.opacity = currentMaterial.opacity;
+          // Preserve original maps
+          mat.map = currentMat.map;
+          mat.normalMap = currentMat.normalMap;
+          mat.roughnessMap = currentMat.roughnessMap;
+          mat.metalnessMap = currentMat.metalnessMap;
+          mat.envMap = currentMat.envMap;
+          mat.envMapIntensity = currentMat.envMapIntensity;
+          mat.transparent = currentMat.transparent;
+          mat.opacity = currentMat.opacity;
 
-          // Настраиваем материал в зависимости от имени меша для новой модели
-          if (child.name === 'Object_52') {
-            meshMaterial.metalness = 0.7;
-            meshMaterial.roughness = 0.2;
-          } else {
-            meshMaterial.metalness = 0.6;
-            meshMaterial.roughness = 0.3;
+          // Adjust material properties for phone frame parts
+          if (!modelPath.includes('watch')) {
+            if (child.name === 'Object_52') {
+              mat.metalness = 0.7;
+              mat.roughness = 0.2;
+            } else {
+              mat.metalness = 0.6;
+              mat.roughness = 0.3;
+            }
           }
 
-          child.material = meshMaterial;
+          child.material = mat;
         }
       }
     });
   }, [scene, color, modelPath]);
 
-  return <primitive ref={modelRef} object={scene} />;
+  return <primitive ref={modelRef} object={scene} dispose={null} />;
 };
 
 export default ColoredProductModel;
+
+useGLTF.preload('/samsung_base_store.glb');
+useGLTF.preload('/samsung_pro_store2.glb');
+useGLTF.preload('/samsung_ultra_store.glb');
+useGLTF.preload('/watch_41_store.glb');
+useGLTF.preload('/tab_base_store.glb');

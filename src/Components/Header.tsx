@@ -118,10 +118,10 @@ const Header: React.FC<HeaderProps> = ({ currentDevice, onDeviceChange }) => {
                   Галерея
                 </motion.a>
                 <motion.a 
-                  href="#tech"
+                  onClick={() => navigate('/tech')}
                   className={`header__nav-link ${activeSection === 'tech' ? 'active' : ''}`}
-                  onClick={() => handleNavClick('tech')}
                   whileHover={{ y: -2 }}
+                  style={{ cursor: 'pointer' }}
                 >
                   Технологии
                 </motion.a>

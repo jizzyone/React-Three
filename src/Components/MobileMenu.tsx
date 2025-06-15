@@ -52,7 +52,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 
   const handleNavClick = (path: string) => {
     onClose();
-    if (path === '/store') {
+    if (path === '/store' || path === '/tech') {
       navigate(path);
     } else {
       // Для якорных ссылок
@@ -142,9 +142,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
               Галерея
             </motion.a>
             <motion.a
-              href="#tech"
               className="mobile-menu__nav-link"
-              onClick={() => handleNavClick('#tech')}
+              onClick={() => handleNavClick('/tech')}
               variants={itemVariants}
             >
               Технологии

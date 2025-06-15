@@ -512,3 +512,84 @@ body {
     rgba(26, 26, 46, 1) 40%
   );
 }
+
+/* Add these styles to WatchSpecs.css */
+
+/* Hide scrollbar but keep functionality for mobile watch page */
+@media (max-width: 768px) {
+  /* For the mobile watch page specifically */
+  .mobile-watch-page {
+    /* For Chrome, Safari, and newer Edge */
+    &::-webkit-scrollbar {
+      width: 0;
+      display: none;
+    }
+    
+    /* For Firefox */
+    scrollbar-width: none;
+    
+    /* For IE/Edge */
+    -ms-overflow-style: none;
+  }
+  
+  /* Apply to body when viewing the watch page on mobile */
+  body:has(.mobile-watch-page) {
+    /* For Chrome, Safari, and newer Edge */
+    &::-webkit-scrollbar {
+      width: 0;
+      display: none;
+    }
+    
+    /* For Firefox */
+    scrollbar-width: none;
+    
+    /* For IE/Edge */
+    -ms-overflow-style: none;
+  }
+}
+
+/* Add these styles at the end of WatchSpecs.css */
+
+/* Hide scrollbar but keep scrolling functionality for mobile watch page */
+@media (max-width: 768px) {
+  /* For the mobile watch page specifically */
+  .mobile-watch-page {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    overflow-y: auto;
+  }
+  
+  /* For Chrome, Safari, and newer Edge */
+  .mobile-watch-page::-webkit-scrollbar {
+    width: 0;
+    display: none;
+  }
+  
+  /* Apply globally when on smaller screens */
+  body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  /* For Chrome, Safari, and newer Edge */
+  body::-webkit-scrollbar {
+    width: 0;
+    display: none;
+  }
+  
+  /* Keep scrolling functionality on watch page elements */
+  .mobile-watch-features,
+  .mobile-specs-section,
+  .mobile-specs-list {
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .mobile-watch-features::-webkit-scrollbar,
+  .mobile-specs-section::-webkit-scrollbar,
+  .mobile-specs-list::-webkit-scrollbar {
+    width: 0;
+    display: none;
+  }
+}

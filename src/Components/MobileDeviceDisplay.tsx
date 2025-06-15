@@ -14,38 +14,22 @@ const MobileDeviceDisplay: React.FC<MobileDeviceDisplayProps> = ({
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [loadError, setLoadError] = useState(false);
-  const [usingFallback, setUsingFallback] = useState(false);
   
-  // Создаем эффект для предзагрузки изображения с таймаутом
+  // Создаем эффект для предзагрузки изображения
   useEffect(() => {
-    let isActive = true; // Флаг для предотвращения обновления состояния после размонтирования
-    
-    // Таймаут для случая, если изображение не загружается слишком долго
-    const timeout = setTimeout(() => {
-      if (isActive && !imageLoaded) {
-        console.warn('Image load timeout for:', imageUrl);
-        setLoadError(true);
-        loadFallbackImage();
-      }
-    }, 5000); // 5 секунд таймаут
-    
     // Создаем новый объект Image для предзагрузки
     const preloadImage = new Image();
     
     // Устанавливаем обработчики событий
     preloadImage.onload = () => {
-      if (isActive) {
-        clearTimeout(timeout);
-        setImageLoaded(true);
-      }
+      setImageLoaded(true);
     };
     
     preloadImage.onerror = () => {
-      if (isActive) {
-        clearTimeout(timeout);
-        setLoadError(true);
-        loadFallbackImage();
-      }
+      setLoadError(true);
+      // Пробуем загрузить fallback изображение
+      const fallbackImg = new Image();
+      fallbackImg.src = getFallbackImage();
     };
     
     // Начинаем загрузку
@@ -53,35 +37,13 @@ const MobileDeviceDisplay: React.FC<MobileDeviceDisplayProps> = ({
     
     // Если изображение уже в кеше, onload не сработает
     if (preloadImage.complete) {
-      clearTimeout(timeout);
       setImageLoaded(true);
     }
-    
-    return () => {
-      // Очищаем таймаут и устанавливаем флаг неактивности
-      clearTimeout(timeout);
-      isActive = false;
-    };
   }, [imageUrl]);
 
   // Определяем fallback изображение в случае ошибки загрузки
   const getFallbackImage = () => {
     return `/fallbacks/${deviceType}_${variant}.png`;
-  };
-  
-  // Функция загрузки запасного изображения
-  const loadFallbackImage = () => {
-    setUsingFallback(true);
-    const fallbackImg = new Image();
-    fallbackImg.onload = () => {
-      setImageLoaded(true);
-      setLoadError(false);
-    };
-    fallbackImg.onerror = () => {
-      console.error('Failed to load even fallback image');
-      // Оставляем placeholder в качестве последнего запасного варианта
-    };
-    fallbackImg.src = getFallbackImage();
   };
 
   // Обработчики загрузки изображения
@@ -91,7 +53,6 @@ const MobileDeviceDisplay: React.FC<MobileDeviceDisplayProps> = ({
 
   const handleImageError = () => {
     setLoadError(true);
-    loadFallbackImage();
   };
 
   const getDeviceTypePlaceholderText = () => {
@@ -106,27 +67,31 @@ const MobileDeviceDisplay: React.FC<MobileDeviceDisplayProps> = ({
         return 'NoName Device';
     }
   };
-  
-  // Определяем текущий URL изображения (основной или fallback)
-  const currentImageUrl = loadError || usingFallback ? getFallbackImage() : imageUrl;
 
   return (
     <div className={`mobile-device-display ${deviceType}-display ${variant}-variant`}>
       <div className="device-image-container">
-        {!imageLoaded && (
+        {!imageLoaded && !loadError ? (
           <div className="device-placeholder">
             <div className="device-placeholder-content">
               <div className="device-placeholder-icon">⌛</div>
               <div className="device-placeholder-text">Загрузка {getDeviceTypePlaceholderText()}...</div>
             </div>
           </div>
-        )}
+        ) : loadError ? (
+          <div className="device-placeholder">
+            <div className="device-placeholder-content">
+              <div className="device-placeholder-icon">📱</div>
+              <div className="device-placeholder-text">{getDeviceTypePlaceholderText()}</div>
+            </div>
+          </div>
+        ) : null}
         
         <img
-          src={currentImageUrl}
+          src={loadError ? getFallbackImage() : imageUrl}
           alt={`${deviceType} ${variant} view`}
           className="device-image"
-          style={{ display: imageLoaded ? 'block' : 'none' }}
+          style={{ display: imageLoaded && !loadError ? 'block' : 'none' }}
           onLoad={handleImageLoad}
           onError={handleImageError}
         />

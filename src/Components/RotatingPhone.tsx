@@ -117,6 +117,8 @@ const MobileRotatingPhone: React.FC = () => {
   );
 };
 
+
+
 const RotatingPhone: React.FC = () => {
   const { isMobile, isTablet } = useDeviceDetect();
   const isTouchDevice = isMobile || isTablet;

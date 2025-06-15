@@ -43,6 +43,16 @@ const ProductDetail: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState(0);
   const { isMobile, isTablet } = useDeviceDetect();
   const isTouchDevice = isMobile || isTablet;
+
+  const noRotate = [
+    'noname-phone-256gb',
+    'noname-tab-s8-ultra-128gb',
+    'noname-tab-s8-ultra-256gb',
+    'noname-tab-s8-ultra-512gb'
+  ];
+
+  const shouldRotate = !!productId && !noRotate.includes(productId);
+  const rotationY = shouldRotate ? 0 : Math.PI;
   
   // Добавим useEffect для установки overflow-x: hidden на body
   useEffect(() => {
@@ -112,12 +122,14 @@ const ProductDetail: React.FC = () => {
               intensity={0.8} 
               color="#b0d0ff"
             />
-            <Stage environment="city" intensity={0.6}>
-              <ColoredProductModel 
-                modelPath={getModelPath()} 
-                color={colorOptions[selectedColor].hex}
-              />
-            </Stage>
+            <group rotation={[0, shouldRotate ? Math.PI : 0, 0]}>
+              <Stage environment="city" intensity={0.6}>
+                <ColoredProductModel
+                  modelPath={getModelPath()}
+                  color={colorOptions[selectedColor].hex}
+                />
+              </Stage>
+            </group>
             {/* Убираем OrbitControls для мобильной версии */}
           </Canvas>
         </div>
